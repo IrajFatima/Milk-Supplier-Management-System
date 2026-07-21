@@ -1,0 +1,52 @@
+frontend/
+│
+├── src/
+│    │
+│    ├── context/
+│    │   └── AuthContext.tsx
+│    ├── assets/
+│    ├── constants/
+│    │
+│    ├── layouts/
+│    │
+│    ├── features/
+│    │   ├── auth/
+│    │   │    ├── pages/
+│    │   │    │   ├── LoginPage.tsx
+│    │   │    │   └── AccessDeniedPage.tsx
+│    │   │    │
+│    │   │    └── components/
+│    │   │        └── LoginForm.tsx
+│    │   ├── dashboard/
+│    │   ├── animals/
+│    │   ├── customers/
+│    │   ├── production/
+│    │   ├── orders/
+│    │   ├── deliveries/
+│    │   ├── billing/
+│    │   ├── payments/
+│    │   └── reports/
+│    │
+│    ├── components/
+│    │   ├── Spinner.tsx
+│    │   ├── Modal.tsx
+│    │   ├── Dropdown.tsx
+│    │   ├── Pagination.tsx
+│    │   ├── Table.tsx
+│    │   ├── TextArea.tsx
+│    │   └── TextField.tsx
+│    │
+│    ├── hooks/
+│    │   └── useAuth.ts
+│    │
+│    ├── services/
+│    │
+│    ├── routes/
+│    │
+│    ├── types/
+│    │
+│    ├── utils/
+│    │
+│    ├── App.tsx
+│    ├── main.tsx
+└── index.html

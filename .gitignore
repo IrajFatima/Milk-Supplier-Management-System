@@ -1,0 +1,84 @@
+# ===========================
+# Dependencies
+# ===========================
+node_modules/
+**/node_modules/
+
+# ===========================
+# Build Output
+# ===========================
+dist/
+build/
+coverage/
+**/dist/
+**/build/
+
+# ===========================
+# Environment Variables
+# ===========================
+.env
+.env.*
+!.env.example
+
+# ===========================
+# Logs
+# ===========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ===========================
+# Vite
+# ===========================
+vite.config.ts.timestamp-*
+*.local
+
+# ===========================
+# TypeScript
+# ===========================
+*.tsbuildinfo
+
+# ===========================
+# IDEs
+# ===========================
+.vscode/
+.idea/
+
+# Keep recommended workspace settings if desired
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===========================
+# Temporary Files
+# ===========================
+.tmp/
+temp/
+tmp/
+
+# ===========================
+# Cache
+# ===========================
+.cache/
+.eslintcache
+
+# ===========================
+# Supabase
+# ===========================
+.supabase/
+
+# ===========================
+# Misc
+# ===========================
+*.pid
+*.seed
+*.pid.lock

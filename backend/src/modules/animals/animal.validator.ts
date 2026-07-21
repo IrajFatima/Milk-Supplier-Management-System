@@ -12,11 +12,11 @@ export const createAnimalValidator = [
         .matches(/^\d{15}$/)
         .withMessage("Tag ID must contain exactly 15 digits."),
 
-body("name")
-    .optional()
-    .trim()
-    .isLength({ max: 100 })
-    .withMessage("Name cannot exceed 100 characters."),
+    body("name")
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage("Name cannot exceed 100 characters."),
 
     body("species")
         .notEmpty()
@@ -119,6 +119,40 @@ export const deactivateAnimalValidator = [
     body("status")
         .isIn(["Sold", "Deceased"])
         .withMessage("Status must be Sold or Deceased."),
+];
+
+export const reactivateAnimalValidator = [
+    param("id")
+        .isInt({ min: 1 })
+        .withMessage("Invalid animal ID."),
+
+    body("operationalStatus")
+        .isIn(
+            ANIMAL_STATUS_OPTIONS.filter(
+                status => status !== "Sold" && status !== "Deceased"
+            )
+        )
+        .withMessage("Invalid operational status."),
+
+    body("shedId")
+        .isInt({ min: 1 })
+        .withMessage("Invalid shed."),
+];
+
+export const changeAnimalStatusValidator = [
+    param("id")
+        .isInt({ min: 1 })
+        .withMessage("Invalid animal ID."),
+
+    body("operationalStatus")
+        .isIn(
+            ANIMAL_STATUS_OPTIONS.filter(
+                status =>
+                    status !== "Sold" &&
+                    status !== "Deceased"
+            )
+        )
+        .withMessage("Invalid operational status."),
 ];
 
 export const getAnimalByIdValidator = [

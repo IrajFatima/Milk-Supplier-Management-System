@@ -50,6 +50,15 @@ export interface DeactivateAnimalRequest {
   status: Extract<AnimalStatus, "Sold" | "Deceased">;
 }
 
+export interface ReactivateAnimalRequest {
+    operationalStatus: AnimalStatus;
+    shedId: number;
+}
+
+export interface ChangeAnimalStatusRequest {
+    operationalStatus: AnimalStatus;
+}
+
 export interface AnimalFilters {
   page: number;
   limit: number;

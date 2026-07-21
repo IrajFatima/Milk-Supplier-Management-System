@@ -8,6 +8,8 @@ import {
   deactivateAnimalValidator,
   getAnimalByIdValidator,
   getAnimalsValidator,
+  reactivateAnimalValidator,
+  changeAnimalStatusValidator
 } from "./animal.validator.js";
 
 import { requireAuth } from "../../middleware/authenticate.js";
@@ -40,10 +42,10 @@ router.get(
 router.get("/sheds", requireAuth, requireRole([ROLES.OWNER, ROLES.FARM_WORKER]), animalController.getSheds)
 
 router.get(
-    "/parent",
-    requireAuth,
-    requireRole([ROLES.OWNER, ROLES.FARM_WORKER]),
-    animalController.getParents
+  "/parent",
+  requireAuth,
+  requireRole([ROLES.OWNER, ROLES.FARM_WORKER]),
+  animalController.getParents
 );
 
 // Get animal profile
@@ -73,6 +75,24 @@ router.patch(
   requireRole([ROLES.OWNER, ROLES.FARM_WORKER]),
   relocateAnimalValidator,
   animalController.relocate
+);
+
+// Reactivate animal
+router.patch(
+  "/:id/reactivate",
+  requireAuth,
+  requireRole([ROLES.OWNER]),
+  reactivateAnimalValidator,
+  animalController.reactivate
+);
+
+// Change animal operational status
+router.patch(
+  "/:id/status",
+  requireAuth,
+  requireRole([ROLES.OWNER, ROLES.FARM_WORKER]),
+  changeAnimalStatusValidator,
+  animalController.changeStatus
 );
 
 

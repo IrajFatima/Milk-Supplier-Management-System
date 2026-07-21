@@ -1,4 +1,4 @@
-import { FiEdit, FiEye, FiMapPin, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiEye, FiMapPin, FiRepeat, FiTrash2, FiRefreshCw, } from "react-icons/fi";
 
 import Table from "../../../components/Table";
 import type { TableColumn } from "../../../components/Table";
@@ -16,6 +16,8 @@ interface AnimalTableProps {
     onEdit: (id: number) => void;
     onRelocate: (id: number) => void;
     onDeactivate: (id: number) => void;
+    onReactivate: (id: number) => void;
+    onChangeStatus: (id: number) => void;
 }
 
 export default function AnimalTable({
@@ -28,6 +30,8 @@ export default function AnimalTable({
     onEdit,
     onRelocate,
     onDeactivate,
+    onReactivate,
+    onChangeStatus,
 }: AnimalTableProps) {
     const columns: TableColumn<AnimalListItem>[] = [
         {
@@ -63,7 +67,8 @@ export default function AnimalTable({
             render: (row) => {
                 const isInactive =
                     row.operationalStatus === ANIMAL_STATUS.SOLD ||
-                    row.operationalStatus === ANIMAL_STATUS.DECEASED
+                    row.operationalStatus === ANIMAL_STATUS.DECEASED;
+
                 return (
                     <div className="flex items-center gap-2">
                         <button
@@ -75,41 +80,67 @@ export default function AnimalTable({
                             <FiEye />
                         </button>
 
-                        {!isInactive && canEdit && (
-                            <button
-                                type="button"
-                                onClick={() => onEdit(row.animalId)}
-                                title="Edit"
-                                className="rounded p-2 transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
-                            >
-                                <FiEdit />
-                            </button>
-                        )}
+                        {isInactive ? (
+                            canDeactivate && (
+                                <button
+                                    type="button"
+                                    onClick={() => onReactivate(row.animalId)}
+                                    title="Reactivate"
+                                    className="rounded p-2 text-[var(--color-success)] transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
+                                >
+                                    <FiRefreshCw />
+                                </button>
+                            )
+                        ) : (
+                            <>
+                                {canEdit && (
+                                    <button
+                                        type="button"
+                                        onClick={() => onEdit(row.animalId)}
+                                        title="Edit"
+                                        className="rounded p-2 transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
+                                    >
+                                        <FiEdit />
+                                    </button>
+                                )}
 
-                        {!isInactive && canRelocate && (
-                            <button
-                                type="button"
-                                onClick={() => onRelocate(row.animalId)}
-                                title="Relocate"
-                                className="rounded p-2 transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
-                            >
-                                <FiMapPin />
-                            </button>
-                        )}
 
-                        {!isInactive && canDeactivate && (
-                            <button
-                                type="button"
-                                onClick={() => onDeactivate(row.animalId)}
-                                title="Deactivate"
-                                className="rounded p-2 text-[var(--color-danger)] transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
-                            >
-                                <FiTrash2 />
-                            </button>
+                                {canRelocate && (
+                                    <button
+                                        type="button"
+                                        onClick={() => onRelocate(row.animalId)}
+                                        title="Relocate"
+                                        className="rounded p-2 transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
+                                    >
+                                        <FiMapPin />
+                                    </button>
+                                )}
+                                {canEdit && (
+                                    <button
+                                        type="button"
+                                        onClick={() => onChangeStatus(row.animalId)}
+                                        title="Change Status"
+                                        className="rounded p-2 transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
+                                    >
+                                        <FiRepeat />
+                                    </button>
+                                )}
+
+                                {canDeactivate && (
+                                    <button
+                                        type="button"
+                                        onClick={() => onDeactivate(row.animalId)}
+                                        title="Deactivate"
+                                        className="rounded p-2 text-[var(--color-danger)] transition hover:bg-[var(--color-sidebar-hover)] hover:text-white"
+                                    >
+                                        <FiTrash2 />
+                                    </button>
+                                )}
+                            </>
                         )}
                     </div>
                 );
-            },
+            }
         }
     ];
 

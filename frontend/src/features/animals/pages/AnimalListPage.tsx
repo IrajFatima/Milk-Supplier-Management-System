@@ -8,7 +8,7 @@ import AnimalSearchBar from "../components/AnimalSearchBar";
 import AnimalTable from "../components/AnimalTable";
 import RelocateAnimalModal from "../components/RelocateAnimalModal";
 import DeactivateAnimalModal from "../components/DeactivateAnimalModal";
-
+import ReactivateAnimalModal from "../components/ReactivateAnimalModal";
 import Pagination from "../../../components/Pagination";
 
 import { animalService } from "../../../services/animal.service";
@@ -23,6 +23,7 @@ import type {
     AnimalListItem,
     ShedDropdown,
 } from "../../../types/animal.types";
+import ChangeAnimalStatusModal from "../components/ChangeAnimalStatusModal";
 
 export default function AnimalListPage() {
     const navigate = useNavigate();
@@ -46,9 +47,12 @@ export default function AnimalListPage() {
     const [totalPages, setTotalPages] = useState(1);
 
     const [relocateAnimalId, setRelocateAnimalId] = useState<number | null>(null);
+    const [changeAnimalStatusId, setChangeAnimalStatusId] = useState<number | null>(null);
     const [deactivateAnimalId, setDeactivateAnimalId] = useState<number | null>(
         null
     );
+    const [reactivateAnimalId, setReactivateAnimalId] =
+        useState<number | null>(null);
 
     const role = user?.role;
 
@@ -188,6 +192,8 @@ export default function AnimalListPage() {
                     onEdit={(id) => navigate(`/animals/${id}/edit`)}
                     onRelocate={(id) => setRelocateAnimalId(id)}
                     onDeactivate={(id) => setDeactivateAnimalId(id)}
+                    onReactivate={(id) => setReactivateAnimalId(id)}
+                    onChangeStatus={(id)=>setChangeAnimalStatusId(id)}
                 />
 
                 <Pagination
@@ -208,6 +214,18 @@ export default function AnimalListPage() {
                 isOpen={deactivateAnimalId !== null}
                 animalId={deactivateAnimalId}
                 onClose={() => setDeactivateAnimalId(null)}
+                onSuccess={loadAnimals}
+            />
+            <ReactivateAnimalModal
+                isOpen={reactivateAnimalId !== null}
+                animalId={reactivateAnimalId}
+                onClose={() => setReactivateAnimalId(null)}
+                onSuccess={loadAnimals}
+            />
+            <ChangeAnimalStatusModal
+                isOpen={changeAnimalStatusId !== null}
+                animalId={changeAnimalStatusId}
+                onClose={() => setChangeAnimalStatusId(null)}
                 onSuccess={loadAnimals}
             />
         </>

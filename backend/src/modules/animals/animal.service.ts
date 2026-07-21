@@ -9,7 +9,9 @@ import {
     RelocateAnimalRequest,
     DeactivateAnimalRequest,
     PaginatedAnimals,
-    ParentAnimal
+    ParentAnimal,
+    ReactivateAnimalRequest,
+    ChangeAnimalStatusRequest
 } from "../../shared/types/animal.types.js";
 import { ANIMAL_BREEDS } from "../../shared/constants/animalBreed.js";
 import { ANIMAL_STATUS } from "../../shared/constants/animalStatus.js";
@@ -143,6 +145,101 @@ export class AnimalService {
         }
 
         await animalRepository.deactivate(animalId, payload.status);
+    }
+    async reactivate(
+        animalId: number,
+        payload: ReactivateAnimalRequest
+    ): Promise<void> {
+
+        const animal = await animalRepository.findById(animalId);
+
+        if (!animal) {
+            throw new AppError(404, "Animal not found.");
+        }
+
+        if (
+            animal.operationalStatus !== ANIMAL_STATUS.SOLD &&
+            animal.operationalStatus !== ANIMAL_STATUS.DECEASED
+        ) {
+            throw new AppError(
+                400,
+                "Only sold or deceased animals can be reactivated."
+            );
+        }
+
+        if (
+            payload.operationalStatus === ANIMAL_STATUS.SOLD ||
+            payload.operationalStatus === ANIMAL_STATUS.DECEASED
+        ) {
+            throw new AppError(
+                400,
+                "Please select a valid active status."
+            );
+        }
+
+        const shed = await animalRepository.getAvailableShed(payload.shedId);
+
+        if (!shed) {
+            throw new AppError(404, "Shed not found.");
+        }
+
+        if (shed.status !== "Active") {
+            throw new AppError(400, "Shed is inactive.");
+        }
+
+        if (shed.current_occupancy >= shed.capacity) {
+            throw new AppError(400, "Shed is already full.");
+        }
+
+        await animalRepository.reactivate(
+            animalId,
+            payload.operationalStatus,
+            payload.shedId
+        );
+    }
+
+    async changeStatus(
+        animalId: number,
+        payload: ChangeAnimalStatusRequest
+    ): Promise<void> {
+
+        const animal = await animalRepository.findById(animalId);
+
+        if (!animal) {
+            throw new AppError(404, "Animal not found.");
+        }
+
+        if (
+            animal.operationalStatus === ANIMAL_STATUS.SOLD ||
+            animal.operationalStatus === ANIMAL_STATUS.DECEASED
+        ) {
+            throw new AppError(
+                400,
+                "Inactive animals cannot have their status changed."
+            );
+        }
+
+        if (
+            payload.operationalStatus === ANIMAL_STATUS.SOLD ||
+            payload.operationalStatus === ANIMAL_STATUS.DECEASED
+        ) {
+            throw new AppError(
+                400,
+                "Use the deactivate endpoint to mark an animal as Sold or Deceased."
+            );
+        }
+
+        if (animal.operationalStatus === payload.operationalStatus) {
+            throw new AppError(
+                400,
+                "Animal already has this status."
+            );
+        }
+
+        await animalRepository.changeStatus(
+            animalId,
+            payload.operationalStatus
+        );
     }
     async getSheds(): Promise<Shed[]> {
         return await animalRepository.getSheds();

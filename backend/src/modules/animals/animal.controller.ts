@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { validationResult } from "express-validator";
-
+import type { ChangeAnimalStatusRequest } from "../../shared/types/animal.types.js";
 import { animalService } from "./animal.service.js";
 import { AppError } from "../../shared/errors/AppError.js";
 import { AuthenticatedRequest } from "../../shared/types/auth.types.js";
@@ -12,6 +12,7 @@ import type { DeactivateAnimalRequest } from "../../shared/types/animal.types.js
 import type { AnimalSpecies } from "../../shared/constants/animalSpecies.js";
 import type { AnimalGender } from "../../shared/constants/animalGender.js";
 import type { AnimalStatus } from "../../shared/constants/animalStatus.js";
+import type { ReactivateAnimalRequest } from "../../shared/types/animal.types.js";
 
 class AnimalController {
     async create(
@@ -192,6 +193,61 @@ class AnimalController {
                 animalId,
                 req.body as DeactivateAnimalRequest
             );
+            res.status(200).json({
+                success: true,
+                message: "Animal status updated successfully.",
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+    async reactivate(
+        req: AuthenticatedRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                throw new AppError(422, errors.array()[0].msg);
+            }
+
+            const animalId = Number(req.params.id);
+
+            await animalService.reactivate(
+                animalId,
+                req.body as ReactivateAnimalRequest
+            );
+
+            res.status(200).json({
+                success: true,
+                message: "Animal reactivated successfully.",
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async changeStatus(
+        req: AuthenticatedRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                throw new AppError(422, errors.array()[0].msg);
+            }
+
+            const animalId = Number(req.params.id);
+
+            await animalService.changeStatus(
+                animalId,
+                req.body as ChangeAnimalStatusRequest
+            );
+
             res.status(200).json({
                 success: true,
                 message: "Animal status updated successfully.",

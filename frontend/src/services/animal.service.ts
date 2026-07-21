@@ -11,6 +11,8 @@ import type {
   RelocateAnimalRequest,
   ShedDropdown,
   UpdateAnimalRequest,
+  ReactivateAnimalRequest,
+  ChangeAnimalStatusRequest
 } from "../types/animal.types";
 
 export const animalService = {
@@ -55,6 +57,18 @@ export const animalService = {
     data: DeactivateAnimalRequest
   ): Promise<void> {
     await api.patch(`/animals/${id}/deactivate`, data);
+  },
+  async reactivateAnimal(
+    id: number,
+    data: ReactivateAnimalRequest
+  ): Promise<void> {
+    await api.patch(`/animals/${id}/reactivate`, data);
+  },
+  async changeAnimalStatus(
+    id: number,
+    data: ChangeAnimalStatusRequest
+  ): Promise<void> {
+    await api.patch(`/animals/${id}/status`, data);
   },
 
   async getSheds(): Promise<ShedDropdown[]> {

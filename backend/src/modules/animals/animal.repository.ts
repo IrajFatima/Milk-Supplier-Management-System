@@ -5,9 +5,10 @@ import {
     CreateAnimalRequest,
     UpdateAnimalRequest,
     PaginatedAnimals,
-    AnimalFilters
+    AnimalFilters,
 } from "../../shared/types/animal.types.js";
 import type { ParentAnimal } from "../../shared/types/animal.types.js";
+import { AnimalStatus } from "../../shared/constants/animalStatus.js";
 
 export class AnimalRepository {
 
@@ -489,7 +490,20 @@ export class AnimalRepository {
         }
     }
 
+    async changeStatus(
+        animalId: number,
+        operationalStatus: AnimalStatus
+    ): Promise<void> {
 
+        await pool.query(
+            `
+        UPDATE animals
+        SET operational_status = $1
+        WHERE animal_id = $2;
+        `,
+            [operationalStatus, animalId]
+        );
+    }
 
     async deactivate(
         animalId: number,
@@ -546,6 +560,52 @@ export class AnimalRepository {
 
         }
     }
+    async reactivate(
+        animalId: number,
+        operationalStatus: AnimalStatus,
+        shedId: number
+    ): Promise<void> {
+
+        const client = await pool.connect();
+
+        try {
+
+            await client.query("BEGIN");
+
+            await client.query(
+                `
+            UPDATE animals
+            SET
+                operational_status = $1,
+                shed_id = $2
+            WHERE animal_id = $3;
+            `,
+                [operationalStatus, shedId, animalId]
+            );
+
+            await client.query(
+                `
+            UPDATE sheds_housing
+            SET current_occupancy = current_occupancy + 1
+            WHERE shed_id = $1;
+            `,
+                [shedId]
+            );
+
+            await client.query("COMMIT");
+
+        } catch (error) {
+
+            await client.query("ROLLBACK");
+            throw error;
+
+        } finally {
+
+            client.release();
+
+        }
+    }
+
     async getSheds(): Promise<Shed[]> {
 
         const query = `

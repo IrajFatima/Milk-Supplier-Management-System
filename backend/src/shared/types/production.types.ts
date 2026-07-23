@@ -10,6 +10,8 @@ export interface Production {
     milkTemperature: number;
     qualityStatus: string;
     recordedBy: number;
+    facilityId: number;
+    facilityName?: string;
     // Joined fields
     animalTagId?: string;
     animalName?: string;
@@ -26,6 +28,7 @@ export interface CreateProductionRequest {
     milkTemperature: number;
     qualityStatus: string;
     recordedBy: number;
+    facilityId: number;
 }
 
 export interface UpdateProductionRequest {
@@ -66,4 +69,17 @@ export interface ProductionAnimal {
 export interface StorageFacility {
     facilityId: number;
     facilityName: string;
+    operationalStatus?: string;
+    totalCapacity?: number;
+}
+
+export interface MilkInventory {
+    inventoryId: number;
+    facilityId: number;
+    packageType: string;
+    qualityStatus: string;
+    availableQuantity: number;
+    storageCapacity: number;
+    responsibleEmployee: number;
+    lastUpdatedDate: string;
 }

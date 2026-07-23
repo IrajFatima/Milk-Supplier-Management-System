@@ -24,12 +24,12 @@ export class AnimalRepository {
             acquisitionSource: row.acquisition_source,
             purchaseInformation: row.purchase_information,
 
-            parentAnimal: row.parent_animal,
+            parentAnimal: Number(row.parent_animal),
             parentAnimalName: row.parent_animal_name ?? null,
 
             currentWeight: row.current_weight,
             operationalStatus: row.operational_status,
-            shedId: row.shed_id,
+            shedId: Number(row.shed_id),
             shedName: row.shed_name ?? null,
             registrationDate: row.registration_date,
         };

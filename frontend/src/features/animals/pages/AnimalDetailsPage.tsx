@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 import { FiEdit } from "react-icons/fi";
 
 import AnimalDetails from "../components/AnimalDetails";
@@ -42,8 +43,8 @@ export default function AnimalDetailsPage() {
                     await animalService.getAnimal(Number(id));
 
                 setAnimal(response);
-            } catch {
-                toast.error("Failed to load animal details.");
+            } catch (error: unknown) {
+                toast.error(getApiErrorMessage(error, "Failed to load animal details."));
             } finally {
                 setLoading(false);
             }

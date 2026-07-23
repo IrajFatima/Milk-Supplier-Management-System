@@ -1,5 +1,6 @@
-import { CreateProductionRequest, Production, ProductionFilters, PaginatedProduction, UpdateProductionRequest, ProductionAnimal, StorageFacility } from "../../shared/types/production.types.js";
+import { CreateProductionRequest, Production, ProductionFilters, PaginatedProduction, UpdateProductionRequest, ProductionAnimal, StorageFacility, MilkInventory } from "../../shared/types/production.types.js";
 import { pool } from "../../config/database.js";
+import type { PoolClient } from "pg";
 
 interface ProductionAnimalValidation {
     animalId: number;
@@ -10,11 +11,11 @@ interface ProductionAnimalValidation {
 }
 
 export class ProductionRepository {
-    // Method implementations directly, no separate declarations needed
+    // Map DB row to Production (camelCase)
     private mapRow(row: any): Production {
         return {
             productionId: row.production_id,
-            animalId: row.animal_id,
+            animalId: Number(row.animal_id),
             status: row.status,
             productionDate: row.production_date,
             productionShift: row.production_shift,
@@ -26,23 +27,39 @@ export class ProductionRepository {
             recordedBy: row.recorded_by,
             animalTagId: row.tag_id,
             animalName: row.animal_name,
-            recordedByName: row.recorded_by_name
+            recordedByName: row.recorded_by_name,
+            facilityId: Number(row.facility_id),
+            facilityName: row.facility_name,
         };
     }
 
-    async create(data: CreateProductionRequest): Promise<Production> {
+    // Overload: when called without client, return full Production; with client return new id
+    async create(data: CreateProductionRequest): Promise<Production>;
+    async create(data: CreateProductionRequest, client: PoolClient): Promise<number>;
+    async create(data: CreateProductionRequest, client?: PoolClient): Promise<Production | number> {
+        
         const query = `
-        INSERT INTO milk_production (
-            animal_id, production_date, production_shift,
-            quantity_produced, fat_percentage, snf_percentage,
-            milk_temperature, quality_status, recorded_by
-        )
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-        RETURNING *;
-    `;
+            INSERT INTO milk_production (
+                animal_id,
+                facility_id,
+                production_date,
+                production_shift,
+                quantity_produced,
+                fat_percentage,
+                snf_percentage,
+                milk_temperature,
+                quality_status,
+                recorded_by
+            )
+            VALUES (
+                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
+            )
+            RETURNING production_id;
+        `;
 
         const values = [
             data.animalId,
+            data.facilityId,
             data.productionDate,
             data.productionShift,
             data.quantityProduced,
@@ -53,9 +70,16 @@ export class ProductionRepository {
             data.recordedBy
         ];
 
-        const { rows } = await pool.query(query, values);
+        const executor = client ?? pool;
+        const { rows } = await executor.query(query, values);
 
-        return this.findById(rows[0].production_id) as Promise<Production>;
+        const newId = rows[0].production_id;
+
+        if (client) {
+            return newId;
+        }
+
+        return this.findById(newId) as Promise<Production>;
     }
 
     async findAll(filters: ProductionFilters): Promise<PaginatedProduction> {
@@ -114,10 +138,12 @@ export class ProductionRepository {
                 mp.*,
                 a.tag_id,
                 a.name AS animal_name,
-                e.full_name AS recorded_by_name
+                e.full_name AS recorded_by_name,
+                sf.facility_name
             FROM milk_production mp
             JOIN animals a ON mp.animal_id = a.animal_id
             LEFT JOIN employees e ON mp.recorded_by = e.employee_id
+            LEFT JOIN storage_facilities sf ON mp.facility_id = sf.facility_id
             ${whereClause}
             ORDER BY mp.production_date DESC, mp.production_id DESC
             LIMIT $${index}
@@ -149,16 +175,19 @@ export class ProductionRepository {
             totalPages: Math.ceil(total / limit)
         };
     }
+
     async findById(id: number): Promise<Production | null> {
         const query = `
         SELECT
             mp.*,
             a.tag_id,
             a.name AS animal_name,
-            e.full_name AS recorded_by_name
+            e.full_name AS recorded_by_name,
+            sf.facility_name
         FROM milk_production mp
         JOIN animals a ON mp.animal_id = a.animal_id
         LEFT JOIN employees e ON mp.recorded_by = e.employee_id
+        LEFT JOIN storage_facilities sf ON mp.facility_id = sf.facility_id
         WHERE mp.production_id = $1;
     `;
 
@@ -168,6 +197,7 @@ export class ProductionRepository {
 
         return this.mapRow(rows[0]);
     }
+
     async update(id: number, data: UpdateProductionRequest): Promise<Production | null> {
         const updates: string[] = [];
         const values: any[] = [];
@@ -243,10 +273,15 @@ export class ProductionRepository {
 
     async getAnimals(): Promise<ProductionAnimal[]> {
         const query = `
-        SELECT animal_id, tag_id, name
-        FROM animals
-        ORDER BY tag_id;
-    `;
+            SELECT
+                animal_id,
+                tag_id,
+                name
+            FROM animals
+            WHERE gender = 'Female'
+            AND operational_status = 'Lactating'
+            ORDER BY tag_id;
+        `;
 
         const { rows } = await pool.query(query);
 
@@ -330,6 +365,200 @@ export class ProductionRepository {
         const { rows } = await pool.query(query, values);
 
         return rows.length > 0;
+    }
+
+    // Storage facility lookup (maps to camelCase)
+    async findStorageFacilityById(facilityId: number, client?: PoolClient): Promise<StorageFacility | null> {
+        const query = `
+        SELECT facility_id, facility_name, operational_status, total_capacity
+        FROM storage_facilities
+        WHERE facility_id = $1
+        AND operational_status = 'Active'
+        LIMIT 1;
+        `;
+
+        const executor = client ?? pool;
+        const { rows } = await executor.query(query, [facilityId]);
+
+        if (!rows.length) return null;
+
+        const row = rows[0];
+        return {
+            facilityId: row.facility_id,
+            facilityName: row.facility_name,
+            operationalStatus: row.operational_status,
+            totalCapacity: Number(row.total_capacity)
+        };
+    }
+
+    // Get total current inventory quantity for a facility
+    async getFacilityInventory(facilityId: number, client?: PoolClient): Promise<number> {
+        const query = `
+        SELECT COALESCE(SUM(available_quantity),0) AS total_available
+        FROM milk_inventory
+        WHERE facility_id = $1;
+        `;
+
+        const executor = client ?? pool;
+        const { rows } = await executor.query(query, [facilityId]);
+
+        return Number(rows[0].total_available ?? 0);
+    }
+
+    // Get inventory row for a facility and package type (maps to camelCase)
+    async getInventoryByFacilityAndPackage(facilityId: number, packageType: string, client?: PoolClient): Promise<MilkInventory | null> {
+        const query = `
+        SELECT *
+        FROM milk_inventory
+        WHERE facility_id = $1
+          AND package_type = $2
+        LIMIT 1;
+        `;
+
+        const executor = client ?? pool;
+        const { rows } = await executor.query(query, [facilityId, packageType]);
+
+        if (!rows.length) return null;
+
+        const r = rows[0];
+        return {
+            inventoryId: r.inventory_id,
+            facilityId: r.facility_id,
+            packageType: r.package_type,
+            qualityStatus: r.quality_status,
+            availableQuantity: Number(r.available_quantity),
+            storageCapacity: Number(r.storage_capacity),
+            responsibleEmployee: r.responsible_employee,
+            lastUpdatedDate: r.last_updated_date
+        };
+    }
+
+    // Create inventory row (returns mapped MilkInventory)
+    async createInventory(
+        facilityId: number,
+        packageType: string,
+        qualityStatus: string,
+        availableQuantity: number,
+        storageCapacity: number,
+        responsibleEmployee: number,
+        client?: PoolClient
+    ): Promise<MilkInventory> {
+        const query = `
+            INSERT INTO milk_inventory (
+                facility_id,
+                package_type,
+                quality_status,
+                available_quantity,
+                storage_capacity,
+                responsible_employee,
+                last_updated_date
+            )
+            VALUES ($1,$2,$3,$4,$5,$6,NOW())
+            RETURNING *;
+        `;
+
+        const executor = client ?? pool;
+        const { rows } = await executor.query(query, [
+            facilityId,
+            packageType,
+            qualityStatus,
+            availableQuantity,
+            storageCapacity,
+            responsibleEmployee
+        ]);
+
+        const r = rows[0];
+        return {
+            inventoryId: r.inventory_id,
+            facilityId: r.facility_id,
+            packageType: r.package_type,
+            qualityStatus: r.quality_status,
+            availableQuantity: Number(r.available_quantity),
+            storageCapacity: Number(r.storage_capacity),
+            responsibleEmployee: r.responsible_employee,
+            lastUpdatedDate: r.last_updated_date
+        };
+    }
+
+    async incrementInventory(
+        inventoryId: number,
+        incrementBy: number,
+        responsibleEmployee: number,
+        client?: PoolClient
+    ): Promise<MilkInventory> {
+
+        const query = `
+        UPDATE milk_inventory
+        SET
+            available_quantity = available_quantity + $1,
+            responsible_employee = $2,
+            last_updated_date = NOW()
+        WHERE inventory_id = $3
+        RETURNING *;
+    `;
+
+        const executor = client ?? pool;
+
+        const { rows } = await executor.query(query, [
+            incrementBy,
+            responsibleEmployee,
+            inventoryId
+        ]);
+
+        const r = rows[0];
+
+        return {
+            inventoryId: r.inventory_id,
+            facilityId: r.facility_id,
+            packageType: r.package_type,
+            qualityStatus: r.quality_status,
+            availableQuantity: Number(r.available_quantity),
+            storageCapacity: Number(r.storage_capacity),
+            responsibleEmployee: r.responsible_employee,
+            lastUpdatedDate: r.last_updated_date
+        };
+    }
+    async decrementInventory(
+        inventoryId: number,
+        decrementBy: number,
+        responsibleEmployee: number,
+        client?: PoolClient
+    ): Promise<MilkInventory> {
+
+        const query = `
+            UPDATE milk_inventory
+            SET
+                available_quantity = available_quantity - $1,
+                responsible_employee = $2,
+                last_updated_date = NOW()
+            WHERE inventory_id = $3
+            AND available_quantity >= $1
+            RETURNING *;
+        `;
+
+        const executor = client ?? pool;
+
+        const { rows } = await executor.query(query, [
+            decrementBy,
+            responsibleEmployee,
+            inventoryId
+        ]);
+        if (!rows.length) {
+            throw new Error("Inventory update failed.");
+        }
+
+        const r = rows[0];
+
+        return {
+            inventoryId: r.inventory_id,
+            facilityId: r.facility_id,
+            packageType: r.package_type,
+            qualityStatus: r.quality_status,
+            availableQuantity: Number(r.available_quantity),
+            storageCapacity: Number(r.storage_capacity),
+            responsibleEmployee: r.responsible_employee,
+            lastUpdatedDate: r.last_updated_date
+        };
     }
 }
 export const productionRepository = new ProductionRepository();

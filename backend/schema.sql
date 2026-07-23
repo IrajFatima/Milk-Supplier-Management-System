@@ -134,6 +134,7 @@ CREATE TABLE animal_weight_history (
 CREATE TABLE milk_production (
     production_id BIGSERIAL PRIMARY KEY,
     animal_id BIGINT NOT NULL REFERENCES animals(animal_id) ON DELETE CASCADE,
+    facility_id BIGINT REFERENCES storage_facilities(facility_id) ON DELETE RESTRICT,
     status TEXT DEFAULT 'Active' CHECK (status IN ('Active', 'Voided')),
     production_date DATE NOT NULL,
     production_shift TEXT,
@@ -148,7 +149,6 @@ CREATE TABLE milk_production (
 CREATE TABLE milk_inventory (
     inventory_id BIGSERIAL PRIMARY KEY,
     facility_id BIGINT REFERENCES storage_facilities(facility_id) ON DELETE RESTRICT,
-    production_id BIGINT REFERENCES milk_production(production_id) ON DELETE RESTRICT,
     available_quantity NUMERIC(10, 2) NOT NULL CHECK (available_quantity >= 0),
     package_type TEXT,
     storage_capacity NUMERIC(10, 2),

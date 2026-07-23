@@ -2,6 +2,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 import AnimalForm from "../components/AnimalForm";
 
@@ -21,8 +22,8 @@ export default function CreateAnimalPage() {
       toast.success("Animal created successfully.");
 
       navigate("/animals");
-    } catch {
-      toast.error("Failed to create animal.");
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, "Failed to create animal."));
       throw new Error("Animal creation failed.");
     }
   }

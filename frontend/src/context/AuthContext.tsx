@@ -40,7 +40,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   const login = useCallback((jwt: string, currentUser: PublicUser) => {
-    console.log("LOGIN", jwt, currentUser);
 
     localStorage.setItem(TOKEN_STORAGE_KEY, jwt);
 

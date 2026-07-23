@@ -1,28 +1,8 @@
-import { Link } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
-import { ROLES } from "../../../constants/roles";
+import { useNavigate } from "react-router-dom";
 
 const AccessDeniedPage = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const getDashboardPath = () => {
-    switch (user?.role) {
-      case ROLES.OWNER:
-        return "/owner";
-
-      case ROLES.FARM_WORKER:
-        return "/farm-worker";
-
-      case ROLES.DELIVERY_STAFF:
-        return "/delivery-staff";
-
-      case ROLES.ACCOUNTANT:
-        return "/accountant";
-
-      default:
-        return "/login";
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--color-background)] px-6">
@@ -35,12 +15,12 @@ const AccessDeniedPage = () => {
           You do not have permission to access this page.
         </p>
 
-        <Link
-          to={getDashboardPath()}
+        <button
+          onClick={() => navigate(-1)}
           className="mt-8 inline-flex rounded-lg bg-[var(--color-primary)] px-6 py-3 font-medium text-white transition hover:bg-[var(--color-primary-hover)]"
         >
           Go Back
-        </Link>
+        </button>
       </div>
     </div>
   );

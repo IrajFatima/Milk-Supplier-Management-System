@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 import Modal from "../../../components/Modal";
 import Dropdown from "../../../components/Dropdown";
@@ -43,8 +44,8 @@ export default function ChangeAnimalStatusModal({
 
             onSuccess();
             onClose();
-        } catch {
-            toast.error("Failed to update animal status.");
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, "Failed to update animal status."));
         } finally {
             setSaving(false);
         }

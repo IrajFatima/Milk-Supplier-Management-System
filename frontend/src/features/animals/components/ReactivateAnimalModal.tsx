@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 import Modal from "../../../components/Modal";
 import Dropdown from "../../../components/Dropdown";
@@ -41,8 +42,8 @@ export default function ReactivateAnimalModal({
                 setSheds(response);
                 setShedId("");
                 setStatus("");
-            } catch {
-                toast.error("Failed to load sheds.");
+            } catch (error: unknown) {
+                toast.error(getApiErrorMessage(error, "Failed to load sheds."));
             } finally {
                 setLoading(false);
             }
@@ -76,8 +77,8 @@ export default function ReactivateAnimalModal({
 
             onSuccess();
             onClose();
-        } catch {
-            toast.error("Failed to reactivate animal.");
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, "Failed to reactivate animal."));
         } finally {
             setSaving(false);
         }

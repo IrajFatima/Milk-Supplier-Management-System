@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 import { useRef } from "react";
 import AnimalFilters from "../components/AnimalFilters";
 import AnimalSearchBar from "../components/AnimalSearchBar";
@@ -86,11 +87,11 @@ export default function AnimalListPage() {
             console.log("RESPONSE", currentSearch, response.data.length);
             setAnimals(response.data);
             setTotalPages(response.totalPages);
-        } catch {
+        } catch (error: unknown) {
             if (requestId !== latestRequest.current) {
                 return;
             }
-            toast.error("Failed to load animals.");
+            toast.error(getApiErrorMessage(error, "Failed to load animals."));
         } finally {
             if (requestId === latestRequest.current) {
                 setLoading(false);
@@ -105,8 +106,8 @@ export default function AnimalListPage() {
             const response = await animalService.getSheds();
             console.log("data of sheds: ", response)
             setSheds(response);
-        } catch {
-            toast.error("Failed to load sheds.");
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, "Failed to load sheds."));
         }
     }, []);
 

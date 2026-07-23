@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 import Modal from "../../../components/Modal";
 
@@ -35,8 +36,8 @@ export default function DeactivateAnimalModal({
 
       onSuccess();
       onClose();
-    } catch {
-      toast.error("Failed to deactivate animal.");
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, "Failed to deactivate animal."));
     } finally {
       setSaving(false);
     }

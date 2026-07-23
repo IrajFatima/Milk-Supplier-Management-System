@@ -65,6 +65,16 @@ export const navigationItems: NavigationItem[] = [
   },
 
   {
+    title: "Temperature Logs",
+    path: "/temperature-logs",
+    roles: [
+      ROLES.OWNER,
+      ROLES.FARM_WORKER,
+      ROLES.ACCOUNTANT,
+    ],
+  },
+
+  {
     title: "Customers",
     path: "/customers",
     roles: [

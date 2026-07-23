@@ -38,6 +38,10 @@ export const createProductionValidator = [
         .withMessage("Quality status is required.")
         .isIn(["Passed", "Failed", "Pending"])
         .withMessage("Invalid quality status."),
+
+    body("facilityId")
+        .isInt({ min: 1 })
+        .withMessage("Invalid storage facility.")
 ];
 
 export const updateProductionValidator = [

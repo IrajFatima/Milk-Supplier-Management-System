@@ -37,7 +37,7 @@ router.get(
 router.get(
     "/animals",
     requireAuth,
-    requireRole([ROLES.OWNER, ROLES.FARM_WORKER]),
+    requireRole([ROLES.OWNER, ROLES.FARM_WORKER, ROLES.ACCOUNTANT]),
     productionController.getAnimals
 );
 
@@ -45,7 +45,7 @@ router.get(
 router.get(
     "/storage-facilities",
     requireAuth,
-    requireRole([ROLES.OWNER, ROLES.FARM_WORKER]),
+    requireRole([ROLES.OWNER, ROLES.FARM_WORKER, ROLES.ACCOUNTANT]),
     productionController.getStorageFacilities
 );
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 import AnimalForm from "../components/AnimalForm";
 
@@ -33,8 +34,8 @@ export default function EditAnimalPage() {
         );
 
         setAnimal(response);
-      } catch {
-        toast.error("Failed to load animal.");
+      } catch (error: unknown) {
+        toast.error(getApiErrorMessage(error, "Failed to load animal."));
       } finally {
         setLoading(false);
       }
@@ -57,8 +58,8 @@ export default function EditAnimalPage() {
       toast.success("Animal updated successfully.");
 
       navigate(`/animals/${id}`);
-    } catch {
-      toast.error("Failed to update animal.");
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, "Failed to update animal."));
 
       throw new Error("Animal update failed.");
     }

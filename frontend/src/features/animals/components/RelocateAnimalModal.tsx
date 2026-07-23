@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 import Modal from "../../../components/Modal";
 import { animalService } from "../../../services/animal.service";
@@ -33,8 +34,8 @@ export default function RelocateAnimalModal({
 
                 const response = await animalService.getSheds();
                 setSheds(response);
-            } catch {
-                toast.error("Failed to load sheds.");
+            } catch (error: unknown) {
+                toast.error(getApiErrorMessage(error, "Failed to load sheds."));
             } finally {
                 setLoading(false);
                 setShedId("");
@@ -61,8 +62,8 @@ export default function RelocateAnimalModal({
 
             onSuccess();
             onClose();
-        } catch {
-            toast.error("Failed to relocate animal.");
+        } catch (error: unknown) {
+            toast.error(getApiErrorMessage(error, "Failed to relocate animal."));
         } finally {
             setSaving(false);
         }

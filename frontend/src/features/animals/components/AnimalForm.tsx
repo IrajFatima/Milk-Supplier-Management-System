@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import axios from "axios";
 import Dropdown from "../../../components/Dropdown";
 import TextField from "../../../components/TextField";
 import Spinner from "../../../components/Spinner";
@@ -42,7 +41,7 @@ import type {
   UpdateAnimalRequest,
 } from "../../../types/animal.types";
 
-import type { ApiErrorResponse } from "../../../types/api.types";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 interface CreateAnimalFormProps {
   mode: "create";
@@ -203,8 +202,8 @@ export default function AnimalForm({
 
           setParents(parentResponse);
         }
-      } catch {
-        toast.error("Failed to load dropdown data.");
+      } catch (error: unknown) {
+        toast.error(getApiErrorMessage(error, "Failed to load dropdown data."));
       }
     }
 
@@ -274,17 +273,7 @@ export default function AnimalForm({
           Number(data.shedId),
       });
     } catch (error: unknown) {
-      let message = "Unable to save animal.";
-
-      if (
-        axios.isAxiosError<ApiErrorResponse>(error)
-      ) {
-        message =
-          error.response?.data.message ??
-          message;
-      }
-
-      toast.error(message);
+      toast.error(getApiErrorMessage(error, "Unable to save animal."));
     } finally {
       setSubmitting(false);
     }

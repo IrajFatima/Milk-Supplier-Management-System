@@ -1,5 +1,7 @@
 import { productionRepository } from "./production.repository.js";
+import { pool } from "../../config/database.js";
 import { AppError } from "../../shared/errors/AppError.js";
+import type { PoolClient } from "pg";
 import {
     Production,
     CreateProductionRequest,
@@ -7,7 +9,8 @@ import {
     ProductionFilters,
     PaginatedProduction,
     ProductionAnimal,
-    StorageFacility
+    StorageFacility,
+    MilkInventory
 } from "../../shared/types/production.types.js";
 
 export class ProductionService {
@@ -138,7 +141,94 @@ export class ProductionService {
             payload.milkTemperature
         );
 
-        return await productionRepository.create(payload);
+        const client: PoolClient = await pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            const facility =
+                await productionRepository.findStorageFacilityById(
+                    payload.facilityId,
+                    client
+                );
+
+            if (!facility) {
+                throw new AppError(
+                    404,
+                    "Selected storage facility does not exist."
+                );
+            }
+            // Insert production within transaction (returns id when client provided)
+            const productionId = await productionRepository.create(payload, client) as number;
+
+            // Inventory integration only when Passed
+            if (payload.qualityStatus === "Passed") {
+                await this.integrateInventory(
+                    client,
+                    payload
+                );
+            }
+
+            await client.query("COMMIT");
+
+            const production = await productionRepository.findById(productionId);
+
+            if (!production) throw new AppError(500, "Failed to retrieve created production.");
+
+            return production;
+
+        } catch (error) {
+            await client.query("ROLLBACK");
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    // Inventory integration extracted for clarity and reduced complexity of create()
+    private async integrateInventory(
+        client: PoolClient,
+        payload: CreateProductionRequest
+    ): Promise<void> {
+        // Validate facility
+        const facility = await productionRepository.findStorageFacilityById(payload.facilityId, client);
+
+        if (!facility) {
+            throw new AppError(404, "Selected storage facility does not exist.");
+        }
+
+        const totalCapacity = Number(facility.totalCapacity ?? 0);
+
+        // Current inventory quantity
+        const currentInventory = await productionRepository.getFacilityInventory(payload.facilityId, client);
+
+        const availableCapacity = totalCapacity - Number(currentInventory);
+
+        if (payload.quantityProduced > availableCapacity) {
+            throw new AppError(400, "Insufficient storage capacity for this production quantity.");
+        }
+
+        // Inventory row for Bulk package
+        const existingInventory = await productionRepository.getInventoryByFacilityAndPackage(payload.facilityId, "Bulk", client);
+
+        if (existingInventory) {
+            await productionRepository.incrementInventory(
+                existingInventory.inventoryId,
+                payload.quantityProduced,
+                payload.recordedBy,
+                client
+            );
+        } else {
+            await productionRepository.createInventory(
+                payload.facilityId,
+                "Bulk",
+                payload.qualityStatus,
+                payload.quantityProduced,
+                totalCapacity,
+                payload.recordedBy,
+                client
+            );
+        }
     }
 
     async getById(productionId: number): Promise<Production> {
@@ -146,12 +236,6 @@ export class ProductionService {
 
         if (!production) {
             throw new AppError(404, "Production record not found.");
-        }
-        if (production.status === "Voided") {
-            throw new AppError(
-                400,
-                "Voided production records cannot be updated."
-            );
         }
 
         return production;
@@ -185,6 +269,21 @@ export class ProductionService {
                 "Voided production records cannot be updated."
             );
         }
+        if (production.qualityStatus === "Passed") {
+
+            if (
+                payload.quantityProduced !== undefined ||
+                payload.productionDate !== undefined ||
+                payload.productionShift !== undefined ||
+                payload.qualityStatus !== undefined
+            ) {
+                throw new AppError(
+                    400,
+                    "Production records that have already been added to inventory only allow updating fat percentage, SNF percentage, and milk temperature."
+                );
+            }
+
+        }
 
         await this.validateProduction(
             production.animalId,
@@ -215,7 +314,50 @@ export class ProductionService {
             throw new AppError(400, "Production record is already voided.");
         }
 
-        await productionRepository.void(productionId);
+        const client = await pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            if (production.qualityStatus === "Passed") {
+
+                const inventory =
+                    await productionRepository.getInventoryByFacilityAndPackage(
+                        production.facilityId,
+                        "Bulk",
+                        client
+                    );
+
+                if (inventory) {
+
+                    if (inventory.availableQuantity < production.quantityProduced) {
+                        throw new AppError(
+                            400,
+                            "Inventory quantity is inconsistent. Cannot void production."
+                        );
+                    }
+
+                    await productionRepository.decrementInventory(
+                        inventory.inventoryId,
+                        production.quantityProduced,
+                        production.recordedBy,
+                        client
+                    );
+                }
+            }
+
+            await productionRepository.void(productionId);
+
+            await client.query("COMMIT");
+
+        } catch (error) {
+
+            await client.query("ROLLBACK");
+            throw error;
+
+        } finally {
+            client.release();
+        }
     }
 
     async getAnimals(): Promise<ProductionAnimal[]> {

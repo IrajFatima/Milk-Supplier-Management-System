@@ -18,7 +18,6 @@ class AuthService {
             "/auth/login",
             credentials
         );
-        console.log("response from login: ", response)
         return response.data.data;
     }
 

@@ -25,6 +25,13 @@ import TemperatureLogsListPage from "../features/temperatureLogs/pages/Temperatu
 import TemperatureLogCreatePage from "../features/temperatureLogs/pages/TemperatureLogCreatePage";
 import TemperatureLogDetailsPage from "../features/temperatureLogs/pages/TemperatureLogDetailsPage";
 
+// Customer pages
+import CustomerListPage from "../features/customers/pages/CustomerListPage";
+import CustomerDetailsPage from "../features/customers/pages/CustomerDetailsPage";
+import CreateCustomerPage from "../features/customers/pages/CreateCustomerPage";
+import EditCustomerPage from "../features/customers/pages/EditCustomerPage";
+
+
 export default function AppRoutes() {
     const roles: [Role, string, string][] = [
         [ROLES.OWNER, "/owner/dashboard", "Owner"],
@@ -75,6 +82,38 @@ export default function AppRoutes() {
                         <Route path="/temperature-logs" element={<TemperatureLogsListPage />} />
                         <Route path="/temperature-logs/:id" element={<TemperatureLogDetailsPage />} />
                     </Route>
+                    {/* Routes accessible to Owner, Farm Worker, Accountant, delivery staff (readers) */}
+
+                    <Route
+                        element={
+                            <RoleProtectedRoute
+                                allowedRoles={[
+                                    ROLES.OWNER,
+                                    ROLES.ACCOUNTANT,
+                                    ROLES.DELIVERY_STAFF,
+                                ]}
+                            />
+                        }
+                    >
+                        <Route path="/customers" element={<CustomerListPage />} />
+                        <Route path="/customers/:id" element={<CustomerDetailsPage />} />
+                    </Route>
+                    {/* Routes accessible to Owner and Accountant */}
+
+                    <Route
+                        element={
+                            <RoleProtectedRoute
+                                allowedRoles={[
+                                    ROLES.OWNER,
+                                    ROLES.ACCOUNTANT,
+                                ]}
+                            />
+                        }
+                    >
+                        <Route path="/customers/create" element={<CreateCustomerPage />} />
+                        <Route path="/customers/:id/edit" element={<EditCustomerPage />} />
+                    </Route>
+
                 </Route>
             </Route>
 

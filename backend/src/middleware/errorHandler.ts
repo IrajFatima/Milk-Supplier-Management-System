@@ -10,8 +10,9 @@ export const errorHandler = (
 ): void => {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
-      success: false,
+      status: "error",
       message: err.message,
+      errors: [],
     });
 
     return;
@@ -19,8 +20,9 @@ export const errorHandler = (
 
   if (err instanceof jwt.TokenExpiredError) {
     res.status(401).json({
-      success: false,
+      status: "error",
       message: "Your session has expired. Please log in again.",
+      errors: [],
     });
 
     return;
@@ -28,8 +30,9 @@ export const errorHandler = (
 
   if (err instanceof jwt.JsonWebTokenError) {
     res.status(401).json({
-      success: false,
+      status: "error",
       message: "Invalid authentication token.",
+      errors: [],
     });
 
     return;
@@ -38,7 +41,8 @@ export const errorHandler = (
   console.error(err);
 
   res.status(500).json({
-    success: false,
+    status: "error",
     message: "Internal server error.",
+    errors: [],
   });
 };

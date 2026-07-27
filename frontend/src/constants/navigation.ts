@@ -81,7 +81,7 @@ export const navigationItems: NavigationItem[] = [
       ROLES.OWNER,
       ROLES.DELIVERY_STAFF,
       ROLES.ACCOUNTANT,
-      ROLES.CUSTOMER,
+      // ROLES.CUSTOMER,
     ],
   },
 

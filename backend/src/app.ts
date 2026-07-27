@@ -5,6 +5,7 @@ import { authRoutes } from "./modules/auth/index.js";
 import { animalRoutes } from "./modules/animals/index.js";
 import { productionRoutes } from "./modules/production/index.js";
 import { temperatureLogsRoutes } from "./modules/temperature-logs/index.js";
+import { customerRoutes } from "./modules/customers/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/animals", animalRoutes);
 app.use("/api/production",productionRoutes);
 app.use("/api/temperature-logs", temperatureLogsRoutes);
+app.use("/api/customers", customerRoutes);
 
 
 app.use(notFound);

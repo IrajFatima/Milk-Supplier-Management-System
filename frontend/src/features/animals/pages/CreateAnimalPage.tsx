@@ -24,7 +24,7 @@ export default function CreateAnimalPage() {
       navigate("/animals");
     } catch (error: unknown) {
       toast.error(getApiErrorMessage(error, "Failed to create animal."));
-      throw new Error("Animal creation failed.");
+      throw new Error("Animal creation failed.", { cause: error });
     }
   }
 

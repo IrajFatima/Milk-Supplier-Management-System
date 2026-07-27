@@ -61,7 +61,7 @@ export default function EditAnimalPage() {
     } catch (error: unknown) {
       toast.error(getApiErrorMessage(error, "Failed to update animal."));
 
-      throw new Error("Animal update failed.");
+      throw new Error("Animal update failed.", { cause: error });
     }
   }
 

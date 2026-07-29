@@ -84,6 +84,15 @@ export const navigationItems: NavigationItem[] = [
       // ROLES.CUSTOMER,
     ],
   },
+  {
+    title: "Orders",
+    path: "/orders",
+    roles: [
+      ROLES.OWNER,
+      ROLES.ACCOUNTANT,
+      ROLES.DELIVERY_STAFF,
+    ],
+  },
 
   {
     title: "Deliveries",

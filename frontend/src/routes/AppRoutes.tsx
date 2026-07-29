@@ -31,6 +31,12 @@ import CustomerDetailsPage from "../features/customers/pages/CustomerDetailsPage
 import CreateCustomerPage from "../features/customers/pages/CreateCustomerPage";
 import EditCustomerPage from "../features/customers/pages/EditCustomerPage";
 
+// Order pages
+import OrderListPage from "../features/orders/pages/OrderListPage";
+import CreateOrderPage from "../features/orders/pages/CreateOrderPage";
+import EditOrderPage from "../features/orders/pages/EditOrderPage";
+import OrderDetailsPage from "../features/orders/pages/OrderDetailsPage";
+
 
 export default function AppRoutes() {
     const roles: [Role, string, string][] = [
@@ -97,6 +103,9 @@ export default function AppRoutes() {
                     >
                         <Route path="/customers" element={<CustomerListPage />} />
                         <Route path="/customers/:id" element={<CustomerDetailsPage />} />
+                        <Route path="/orders" element={<OrderListPage />} />
+                        <Route path="/orders/:id" element={<OrderDetailsPage />} />
+
                     </Route>
                     {/* Routes accessible to Owner and Accountant */}
 
@@ -112,6 +121,8 @@ export default function AppRoutes() {
                     >
                         <Route path="/customers/create" element={<CreateCustomerPage />} />
                         <Route path="/customers/:id/edit" element={<EditCustomerPage />} />
+                        <Route path="/orders/create" element={<CreateOrderPage />} />
+                        <Route path="/orders/:id/edit" element={<EditOrderPage />} />
                     </Route>
 
                 </Route>

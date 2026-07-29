@@ -3,6 +3,7 @@ import Table from "../../../components/Table";
 import type { TableColumn } from "../../../components/Table";
 import type { Production } from "../../../types/production.types";
 import { formatDate } from "../../../utils/FormatDate";
+import ProductionStatusBadge from "./ProductionStatusBadge";
 // import { ANIMAL_STATUS } from "../../../constants/animalStatus";
 
 interface ProductionTableProps {
@@ -26,7 +27,11 @@ export default function ProductionTable({ productions, loading, role, onView, on
     { key: "quantityProduced", title: "Qty (L)" },
     { key: "facilityName", title: "Facility", render: (row) => row.facilityName ?? "-" },
     { key: "qualityStatus", title: "Quality" },
-    { key: "status", title: "Status" },
+    {
+      key: "status",
+      title: "Status",
+      render: (row) => <ProductionStatusBadge status={row.status} />,
+    },
     {
       key: "actions",
       title: "Actions",

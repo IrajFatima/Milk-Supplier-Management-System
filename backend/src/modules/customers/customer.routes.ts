@@ -29,7 +29,6 @@ router.get(
   requireRole([
     ROLES.OWNER,
     ROLES.ACCOUNTANT,
-    ROLES.DELIVERY_STAFF,
   ]),
   getCustomersValidator,
   customerController.list
@@ -57,7 +56,6 @@ router.get(
   requireRole([
     ROLES.OWNER,
     ROLES.ACCOUNTANT,
-    ROLES.DELIVERY_STAFF,
   ]),
   getCustomerByIdValidator,
   customerController.getById

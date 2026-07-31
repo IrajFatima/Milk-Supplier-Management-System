@@ -8,6 +8,7 @@ import { temperatureLogsRoutes } from "./modules/temperature-logs/index.js";
 import { customerRoutes } from "./modules/customers/index.js";
 import { orderRoutes } from "./modules/orders/index.js";
 import { deliveryRoutes } from "./modules/deliveries/index.js";
+import { userRoutes } from "./modules/users/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -35,6 +36,7 @@ app.use("/api/temperature-logs", temperatureLogsRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/deliveries", deliveryRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

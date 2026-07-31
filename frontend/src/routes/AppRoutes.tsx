@@ -41,6 +41,12 @@ import OrderDetailsPage from "../features/orders/pages/OrderDetailsPage";
 import DeliveryListPage from "../features/deliveries/pages/DeliveryListPage";
 import DeliveryDetailsPage from "../features/deliveries/pages/DeliveryDetailsPage";
 
+// User pages
+import UserListPage from "../features/users/pages/UserListPage";
+import CreateUserPage from "../features/users/pages/CreateUserPage";
+import EditUserPage from "../features/users/pages/EditUserPage";
+import UserDetailsPage from "../features/users/pages/UserDetailsPage";
+
 
 export default function AppRoutes() {
     const roles: [Role, string, string][] = [
@@ -130,6 +136,23 @@ export default function AppRoutes() {
                         <Route path="/customers/:id/edit" element={<EditCustomerPage />} />
                         <Route path="/orders/create" element={<CreateOrderPage />} />
                         <Route path="/orders/:id/edit" element={<EditOrderPage />} />
+                    </Route>
+
+                    {/* Routes accessible to Owner and System Administrator */}
+                    <Route
+                        element={
+                            <RoleProtectedRoute
+                                allowedRoles={[
+                                    ROLES.OWNER,
+                                    ROLES.SYSTEM_ADMINISTRATOR,
+                                ]}
+                            />
+                        }
+                    >
+                        <Route path="/users" element={<UserListPage />} />
+                        <Route path="/users/:id" element={<UserDetailsPage />} />
+                        <Route path="/users/create" element={<CreateUserPage />} />
+                        <Route path="/users/:id/edit" element={<EditUserPage />} />
                     </Route>
 
                 </Route>

@@ -50,7 +50,7 @@ router.post(
 router.get(
     "/subscriptions",
     requireAuth,
-    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT, ROLES.DELIVERY_STAFF]),
+    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT]),
     listOrdersValidator,
     orderController.listSubscriptions
 );
@@ -59,7 +59,7 @@ router.get(
 router.get(
     "/subscriptions/:id",
     requireAuth,
-    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT, ROLES.DELIVERY_STAFF]),
+    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT]),
     orderIdValidator,
     orderController.getSubscriptionById
 );
@@ -129,7 +129,7 @@ router.post(
 router.get(
     "/one-time",
     requireAuth,
-    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT, ROLES.DELIVERY_STAFF]),
+    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT]),
     listOrdersValidator,
     orderController.listOrders
 );
@@ -138,7 +138,7 @@ router.get(
 router.get(
     "/one-time/:id",
     requireAuth,
-    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT, ROLES.DELIVERY_STAFF]),
+    requireRole([ROLES.OWNER, ROLES.ACCOUNTANT]),
     orderIdValidator,
     orderController.getOrderById
 );

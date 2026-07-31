@@ -17,7 +17,8 @@ CREATE TABLE sheds_housing (
     location_area TEXT,
     capacity INTEGER NOT NULL CHECK (capacity > 0),
     current_occupancy INTEGER DEFAULT 0 CHECK (current_occupancy >= 0),
-    status TEXT DEFAULT 'Active',
+    status TEXT DEFAULT 'Ac
+    tive',
     remarks TEXT
 );
 

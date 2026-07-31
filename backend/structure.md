@@ -5,7 +5,6 @@ backend/
 ├── package-lock.json
 ├── tsconfig.json
 ├── schema.sql
-├── structure.txt
 └── src/
 ├── app.ts
 ├── server.ts
@@ -54,7 +53,6 @@ backend/
 │ │ ├── temperature-logs.routes.ts
 │ │ ├── temperature-logs.validator.ts
 │ │ └── temperature-simulator.job.ts
-│ ├── billing/ 
 │ ├── deliveries/
 │ │ ├── index.ts
 │ │ ├── delivery.controller.ts
@@ -63,16 +61,16 @@ backend/
 │ │ ├── delivery.repository.ts
 │ │ ├── delivery.routes.ts
 │ │ └── delivery.validator.ts
-│ ├── orders/ 
+│ ├── orders/
 │ │ ├── index.ts
 │ │ ├── order.controller.ts
 │ │ ├── order.service.ts
 │ │ ├── order.repository.ts
 │ │ ├── order.routes.ts
-│ │ └── order.validator.ts
-│ ├── payments/ 
-│ ├── reports/ 
-│ └── users/ 
+│ │ ├── order.validator.ts
+│ │ └── helpers/
+│ │ └── cutoff.helper.ts
+│ └── users/
 └── shared/
 ├── constants/
 │ ├── acquisitionSource.ts
@@ -80,6 +78,7 @@ backend/
 │ ├── animalGender.ts
 │ ├── animalSpecies.ts
 │ ├── animalStatus.ts
+│ ├── config.ts
 │ ├── delivery.ts
 │ ├── order.ts
 │ ├── customer.ts

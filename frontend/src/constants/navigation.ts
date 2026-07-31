@@ -103,6 +103,22 @@ export const navigationItems: NavigationItem[] = [
       // ROLES.ACCOUNTANT,
     ],
   },
+  {
+    title: "Users",
+    path: "/users",
+    roles: [
+      ROLES.OWNER,
+      ROLES.SYSTEM_ADMINISTRATOR,
+    ],
+  },
+  {
+    title: "System Configurations",
+    path: "/system-configurations",
+    roles: [
+      ROLES.OWNER,
+      ROLES.SYSTEM_ADMINISTRATOR,
+    ],
+  },
 
   
   // ==========================================================

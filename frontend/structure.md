@@ -1,5 +1,3 @@
-<!-- @format -->
-
 frontend/
 │
 ├── public/
@@ -65,9 +63,6 @@ frontend/
 │ │ │ ├── NotFoundPage.tsx
 │ │ │ └── UserProfile.tsx
 │ │ │
-│ │ ├── billing/  
-│ │ │ └── (empty)
-│ │ │
 │ │ ├── customers/
 │ │ │ ├── components/
 │ │ │ │ ├── ChangeCustomerStatusModal.tsx
@@ -84,9 +79,6 @@ frontend/
 │ │ │ ├── CustomerListPage.tsx
 │ │ │ └── EditCustomerPage.tsx
 │ │ │
-│ │ ├── dashboards/  
-│ │ │ └── (empty)
-│ │ │
 │ │ ├── deliveries/  
 │ │ │ ├── components
 │ │ │ │ ├── DeliveryDetails.tsx
@@ -94,7 +86,8 @@ frontend/
 │ │ │ │ ├── DeliverySearchBar.tsx
 │ │ │ │ ├── DeliveryStatusBadge.tsx
 │ │ │ │ ├── DeliveryTable.tsx
-│ │ │ │ └── AssignDeliveryModal.tsx
+│ │ │ │ ├── AssignDeliveryModal.tsx
+│ │ │ │ └── UpdateDeliveryStatusModal.tsx
 │ │ │ │
 │ │ │ └── pages/
 │ │ │ ├── DeliveryDetailsPage.tsx
@@ -120,9 +113,6 @@ frontend/
 │ │ │ ├── OrderDetailsPage.tsx
 │ │ │ └── OrderListPage.tsx
 │ │ │
-│ │ ├── payments/  
-│ │ │ └── (empty)
-│ │ │
 │ │ ├── production/
 │ │ │ ├── components/
 │ │ │ │ ├── ProductionDetailCard.tsx
@@ -138,9 +128,6 @@ frontend/
 │ │ │ ├── ProductionDetailsPage.tsx
 │ │ │ ├── ProductionEditPage.tsx
 │ │ │ └── ProductionListPage.tsx
-│ │ │
-│ │ ├── reports/  
-│ │ │ └── (empty)
 │ │ │
 │ │ └── temperatureLogs/
 │ │ ├── components/

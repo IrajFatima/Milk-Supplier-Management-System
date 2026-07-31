@@ -81,5 +81,6 @@ export interface MilkInventory {
     availableQuantity: number;
     storageCapacity: number;
     responsibleEmployee: number;
+    milkTypeId: number;
     lastUpdatedDate: string;
 }

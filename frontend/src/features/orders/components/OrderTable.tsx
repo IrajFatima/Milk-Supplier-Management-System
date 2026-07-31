@@ -82,7 +82,7 @@ export default function OrderTable({
                 row.deliveryDate
                     ? formatDate(
                         row.deliveryDate,
-                        "dateTime"
+                        "date"
                     )
                     : "-",
         },

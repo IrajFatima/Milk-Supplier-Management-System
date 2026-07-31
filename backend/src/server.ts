@@ -3,6 +3,7 @@ import { env } from "./config/env.js";
 import { checkDatabaseConnection } from "./shared/utils/databaseHealth.js";
 import { pool } from "./config/database.js";
 import { temperatureSimulatorJob } from "./modules/temperature-logs/temperature-simulator.job.js";
+import { deliveryPlanningJob } from "./modules/deliveries/delivery-planning.job.js";
 
 const startServer = async (): Promise<void> => {
   try {
@@ -22,6 +23,18 @@ const startServer = async (): Promise<void> => {
       // } catch (err) {
       //   console.error("Failed to register temperature simulator job:", err);
       // }
+
+      try {
+        deliveryPlanningJob.start();
+        console.log(
+          "Delivery Planning: scheduler registered and started."
+        );
+      } catch (err) {
+        console.error(
+          "Failed to register delivery planning job:",
+          err
+        );
+      }
     });
 
     const shutdown = async () => {
@@ -34,6 +47,18 @@ const startServer = async (): Promise<void> => {
       // } catch (err) {
       //   console.error("Error while stopping temperature simulator job:", err);
       // }
+
+      try {
+        deliveryPlanningJob.stop();
+        console.log(
+          "Delivery Planning: scheduler stopped."
+        );
+      } catch (err) {
+        console.error(
+          "Error while stopping delivery planning job:",
+          err
+        );
+      }
 
       server.close(async () => {
         await pool.end();

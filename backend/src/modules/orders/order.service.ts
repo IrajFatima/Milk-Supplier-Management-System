@@ -1,6 +1,8 @@
 // src/modules/orders/order.service.ts
 import { AppError } from "../../shared/errors/AppError.js";
 import { orderRepository } from "./order.repository.js";
+import { deliveryService } from "../deliveries/delivery.service.js";
+import { PoolClient } from "pg";
 import {
     CreateSubscriptionRequest,
     CreateOneTimeOrderRequest,
@@ -124,7 +126,16 @@ export class OrderService {
         // BR-OM-204: Validate delivery date (not past, not today after cutoff)
         await this.validateOneTimeDeliveryDate(payload.deliveryDate);
 
-        return orderRepository.createOrder(payload);
+        const order = await orderRepository.createOrder(payload);
+
+        await deliveryService.create({
+            orderId: order.orderId,
+            customerId: order.customerId,
+            deliveryDate: order.deliveryDate!,
+            scheduledQuantity: order.quantity,
+        });
+
+        return order;
     }
 
     async bulkCreateOrders(payload: CreateOneTimeOrderRequest[]): Promise<OrderEntity[]> {
@@ -138,7 +149,18 @@ export class OrderService {
                 await this.validateOneTimeDeliveryDate(order.deliveryDate);
             }
             const created = await orderRepository.bulkCreateOrders(payload, client);
+
+            await deliveryService.createMany(
+                created.map((order) => ({
+                    orderId: order.orderId,
+                    customerId: order.customerId,
+                    deliveryDate: order.deliveryDate!,
+                    scheduledQuantity: order.quantity,
+                }))
+            );
+
             await orderRepository.commit(client);
+
             return created;
         } catch (error) {
             await orderRepository.rollback(client);

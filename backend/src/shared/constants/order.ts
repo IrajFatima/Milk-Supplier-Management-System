@@ -5,6 +5,8 @@ export const ORDER_TYPES = {
   ONE_TIME: "One-Time",
 } as const;
 
+export const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPES);
+
 export const BILLING_MODELS = {
   SUBSCRIPTION: "Subscription",
   PER_DELIVERY: "Per Delivery",
@@ -72,6 +74,7 @@ export const ORDER_SORT_FIELDS = {
 export const DEFAULT_PAGE = 1;
 export const DEFAULT_LIMIT = 10;
 export const MAX_LIMIT = 100;
+
 
 /* =====================================================
    Types

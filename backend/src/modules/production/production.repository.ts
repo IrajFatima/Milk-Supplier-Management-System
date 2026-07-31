@@ -2,14 +2,6 @@ import { CreateProductionRequest, Production, ProductionFilters, PaginatedProduc
 import { pool } from "../../config/database.js";
 import type { PoolClient } from "pg";
 
-interface ProductionAnimalValidation {
-    animalId: number;
-    tagId: string;
-    gender: string;
-    operationalStatus: string;
-    registrationDate: string;
-}
-
 export class ProductionRepository {
     // Map DB row to Production (camelCase)
     private mapRow(row: any): Production {
@@ -26,6 +18,7 @@ export class ProductionRepository {
             qualityStatus: row.quality_status,
             recordedBy: row.recorded_by,
             animalTagId: row.tag_id,
+            milkTypeId: row.milk_type_id,
             animalName: row.animal_name,
             recordedByName: row.recorded_by_name,
             facilityId: Number(row.facility_id),
@@ -37,7 +30,7 @@ export class ProductionRepository {
     async create(data: CreateProductionRequest): Promise<Production>;
     async create(data: CreateProductionRequest, client: PoolClient): Promise<number>;
     async create(data: CreateProductionRequest, client?: PoolClient): Promise<Production | number> {
-        
+
         const query = `
             INSERT INTO milk_production (
                 animal_id,
@@ -49,10 +42,11 @@ export class ProductionRepository {
                 snf_percentage,
                 milk_temperature,
                 quality_status,
+                milk_type_id,
                 recorded_by
             )
             VALUES (
-                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
+                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11
             )
             RETURNING production_id;
         `;
@@ -67,6 +61,7 @@ export class ProductionRepository {
             data.snfPercentage,
             data.milkTemperature,
             data.qualityStatus,
+            data.milkTypeId,
             data.recordedBy
         ];
 
@@ -307,32 +302,6 @@ export class ProductionRepository {
             facilityName: row.facility_name
         }));
     }
-    async findAnimalById(animalId: number): Promise<ProductionAnimalValidation | null> {
-        const query = `
-        SELECT
-            animal_id,
-            tag_id,
-            gender,
-            operational_status,
-            registration_date
-        FROM animals
-        WHERE animal_id = $1;
-    `;
-
-        const { rows } = await pool.query(query, [animalId]);
-
-        if (!rows.length) {
-            return null;
-        }
-
-        return {
-            animalId: rows[0].animal_id,
-            tagId: rows[0].tag_id,
-            gender: rows[0].gender,
-            operationalStatus: rows[0].operational_status,
-            registrationDate: rows[0].registration_date
-        };
-    }
     async findDuplicateProduction(
         animalId: number,
         productionDate: string,
@@ -406,17 +375,23 @@ export class ProductionRepository {
     }
 
     // Get inventory row for a facility and package type (maps to camelCase)
-    async getInventoryByFacilityAndPackage(facilityId: number, packageType: string, client?: PoolClient): Promise<MilkInventory | null> {
+    async getInventoryByFacilityPackageAndMilkType(
+        facilityId: number,
+        packageType: string,
+        milkTypeId: number,
+        client?: PoolClient
+    ): Promise<MilkInventory | null> {
         const query = `
         SELECT *
         FROM milk_inventory
         WHERE facility_id = $1
           AND package_type = $2
+            AND milk_type_id = $3
         LIMIT 1;
         `;
 
         const executor = client ?? pool;
-        const { rows } = await executor.query(query, [facilityId, packageType]);
+        const { rows } = await executor.query(query, [facilityId, packageType, milkTypeId]);
 
         if (!rows.length) return null;
 
@@ -429,6 +404,7 @@ export class ProductionRepository {
             availableQuantity: Number(r.available_quantity),
             storageCapacity: Number(r.storage_capacity),
             responsibleEmployee: r.responsible_employee,
+            milkTypeId: r.milk_type_id,
             lastUpdatedDate: r.last_updated_date
         };
     }
@@ -441,6 +417,7 @@ export class ProductionRepository {
         availableQuantity: number,
         storageCapacity: number,
         responsibleEmployee: number,
+        milkTypeId: number,
         client?: PoolClient
     ): Promise<MilkInventory> {
         const query = `
@@ -451,9 +428,10 @@ export class ProductionRepository {
                 available_quantity,
                 storage_capacity,
                 responsible_employee,
+                milk_type_id,
                 last_updated_date
             )
-            VALUES ($1,$2,$3,$4,$5,$6,NOW())
+            VALUES ($1,$2,$3,$4,$5,$6,$7,NOW())
             RETURNING *;
         `;
 
@@ -464,7 +442,8 @@ export class ProductionRepository {
             qualityStatus,
             availableQuantity,
             storageCapacity,
-            responsibleEmployee
+            responsibleEmployee,
+            milkTypeId
         ]);
 
         const r = rows[0];
@@ -476,6 +455,7 @@ export class ProductionRepository {
             availableQuantity: Number(r.available_quantity),
             storageCapacity: Number(r.storage_capacity),
             responsibleEmployee: r.responsible_employee,
+            milkTypeId: r.milk_type_id,
             lastUpdatedDate: r.last_updated_date
         };
     }
@@ -515,6 +495,7 @@ export class ProductionRepository {
             availableQuantity: Number(r.available_quantity),
             storageCapacity: Number(r.storage_capacity),
             responsibleEmployee: r.responsible_employee,
+            milkTypeId: r.milk_type_id,
             lastUpdatedDate: r.last_updated_date
         };
     }
@@ -557,7 +538,27 @@ export class ProductionRepository {
             availableQuantity: Number(r.available_quantity),
             storageCapacity: Number(r.storage_capacity),
             responsibleEmployee: r.responsible_employee,
+            milkTypeId: r.milk_type_id,
             lastUpdatedDate: r.last_updated_date
+        };
+    }
+    async findMilkTypeByName(productName: string): Promise<{ milkTypeId: number } | null> {
+        const query = `
+        SELECT milk_type_id
+        FROM milk_types
+        WHERE product_name = $1
+          AND status = 'Active'
+        LIMIT 1;
+    `;
+
+        const { rows } = await pool.query(query, [productName]);
+
+        if (!rows.length) {
+            return null;
+        }
+
+        return {
+            milkTypeId: rows[0].milk_type_id
         };
     }
 }

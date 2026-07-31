@@ -79,7 +79,7 @@ export const navigationItems: NavigationItem[] = [
     path: "/customers",
     roles: [
       ROLES.OWNER,
-      ROLES.DELIVERY_STAFF,
+      // ROLES.DELIVERY_STAFF,
       ROLES.ACCOUNTANT,
       // ROLES.CUSTOMER,
     ],
@@ -90,7 +90,7 @@ export const navigationItems: NavigationItem[] = [
     roles: [
       ROLES.OWNER,
       ROLES.ACCOUNTANT,
-      ROLES.DELIVERY_STAFF,
+      // ROLES.DELIVERY_STAFF,
     ],
   },
 
@@ -100,25 +100,26 @@ export const navigationItems: NavigationItem[] = [
     roles: [
       ROLES.OWNER,
       ROLES.DELIVERY_STAFF,
-      ROLES.ACCOUNTANT,
+      // ROLES.ACCOUNTANT,
     ],
   },
 
-  {
-    title: "Billing",
-    path: "/billing",
-    roles: [
-      ROLES.OWNER,
-      ROLES.DELIVERY_STAFF,
-      ROLES.ACCOUNTANT,
-      ROLES.CUSTOMER,
-    ],
-  },
-
+  
   // ==========================================================
   // Future Modules (Should Have / Nice to Have)
   // Uncomment as the corresponding features are implemented.
   // ==========================================================
+  
+  // {
+  //   title: "Billing",
+  //   path: "/billing",
+  //   roles: [
+  //     ROLES.OWNER,
+  //     ROLES.DELIVERY_STAFF,
+  //     ROLES.ACCOUNTANT,
+  //     ROLES.CUSTOMER,
+  //   ],
+  // },
 
   /*
   {

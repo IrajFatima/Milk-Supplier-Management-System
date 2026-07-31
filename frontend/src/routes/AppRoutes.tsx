@@ -37,6 +37,10 @@ import CreateOrderPage from "../features/orders/pages/CreateOrderPage";
 import EditOrderPage from "../features/orders/pages/EditOrderPage";
 import OrderDetailsPage from "../features/orders/pages/OrderDetailsPage";
 
+// Deliveries Page
+import DeliveryListPage from "../features/deliveries/pages/DeliveryListPage";
+import DeliveryDetailsPage from "../features/deliveries/pages/DeliveryDetailsPage";
+
 
 export default function AppRoutes() {
     const roles: [Role, string, string][] = [
@@ -88,7 +92,7 @@ export default function AppRoutes() {
                         <Route path="/temperature-logs" element={<TemperatureLogsListPage />} />
                         <Route path="/temperature-logs/:id" element={<TemperatureLogDetailsPage />} />
                     </Route>
-                    {/* Routes accessible to Owner, Farm Worker, Accountant, delivery staff (readers) */}
+                    {/* Routes accessible to Owner, Accountant, delivery staff (readers) */}
 
                     <Route
                         element={
@@ -101,10 +105,9 @@ export default function AppRoutes() {
                             />
                         }
                     >
-                        <Route path="/customers" element={<CustomerListPage />} />
-                        <Route path="/customers/:id" element={<CustomerDetailsPage />} />
-                        <Route path="/orders" element={<OrderListPage />} />
-                        <Route path="/orders/:id" element={<OrderDetailsPage />} />
+
+                        <Route path="/deliveries" element={<DeliveryListPage />} />
+                        <Route path="/deliveries/:id" element={<DeliveryDetailsPage />} />
 
                     </Route>
                     {/* Routes accessible to Owner and Accountant */}
@@ -119,6 +122,10 @@ export default function AppRoutes() {
                             />
                         }
                     >
+                        <Route path="/customers" element={<CustomerListPage />} />
+                        <Route path="/customers/:id" element={<CustomerDetailsPage />} />
+                        <Route path="/orders" element={<OrderListPage />} />
+                        <Route path="/orders/:id" element={<OrderDetailsPage />} />
                         <Route path="/customers/create" element={<CreateCustomerPage />} />
                         <Route path="/customers/:id/edit" element={<EditCustomerPage />} />
                         <Route path="/orders/create" element={<CreateOrderPage />} />

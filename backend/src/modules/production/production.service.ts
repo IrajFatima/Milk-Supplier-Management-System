@@ -12,6 +12,9 @@ import {
     StorageFacility,
     MilkInventory
 } from "../../shared/types/production.types.js";
+import { ANIMAL_SPECIES } from "../../shared/constants/animalSpecies.js";
+import { animalRepository } from "../animals/animal.repository.js";
+
 
 export class ProductionService {
 
@@ -27,7 +30,7 @@ export class ProductionService {
     ): Promise<void> {
 
         // Check animal exists
-        const animal = await productionRepository.findAnimalById(animalId);
+        const animal = await animalRepository.findById(animalId);
 
         if (!animal) {
             throw new AppError(404, "Selected animal does not exist.");
@@ -158,14 +161,23 @@ export class ProductionService {
                     "Selected storage facility does not exist."
                 );
             }
-            // Insert production within transaction (returns id when client provided)
-            const productionId = await productionRepository.create(payload, client) as number;
 
+            const animal = await animalRepository.findById(payload.animalId);
+
+            if (!animal) {
+                throw new AppError(404, "Selected animal does not exist.");
+            }
+
+            const milkTypeId = await this.getMilkTypeIdFromSpecies(animal.species);
+            const payloadWithMilkType = { ...payload, milkTypeId };
+            // Insert production within transaction (returns id when client provided)
+            const productionId = await productionRepository.create(payloadWithMilkType, client) as number;
+            
             // Inventory integration only when Passed
             if (payload.qualityStatus === "Passed") {
                 await this.integrateInventory(
                     client,
-                    payload
+                    payloadWithMilkType
                 );
             }
 
@@ -208,8 +220,9 @@ export class ProductionService {
             throw new AppError(400, "Insufficient storage capacity for this production quantity.");
         }
 
+
         // Inventory row for Bulk package
-        const existingInventory = await productionRepository.getInventoryByFacilityAndPackage(payload.facilityId, "Bulk", client);
+        const existingInventory = await productionRepository.getInventoryByFacilityPackageAndMilkType(payload.facilityId, "Bulk", payload.milkTypeId , client);
 
         if (existingInventory) {
             await productionRepository.incrementInventory(
@@ -226,6 +239,7 @@ export class ProductionService {
                 payload.quantityProduced,
                 totalCapacity,
                 payload.recordedBy,
+                payload.milkTypeId as number,
                 client
             );
         }
@@ -322,9 +336,10 @@ export class ProductionService {
             if (production.qualityStatus === "Passed") {
 
                 const inventory =
-                    await productionRepository.getInventoryByFacilityAndPackage(
+                    await productionRepository.getInventoryByFacilityPackageAndMilkType(
                         production.facilityId,
                         "Bulk",
+                        production.milkTypeId as number,
                         client
                     );
 
@@ -366,6 +381,41 @@ export class ProductionService {
 
     async getStorageFacilities(): Promise<StorageFacility[]> {
         return await productionRepository.getStorageFacilities();
+    }
+
+    private async getMilkTypeIdFromSpecies(
+        species: string
+    ): Promise<number> {
+
+        let productName: string;
+
+        switch (species) {
+            case ANIMAL_SPECIES.COW:
+                productName = "Cow Milk";
+                break;
+
+            case ANIMAL_SPECIES.BUFFALO:
+                productName = "Buffalo Milk";
+                break;
+
+            default:
+                throw new AppError(
+                    400,
+                    `Unsupported animal species '${species}'.`
+                );
+        }
+
+        const milkType =
+            await productionRepository.findMilkTypeByName(productName);
+
+        if (!milkType) {
+            throw new AppError(
+                500,
+                `Milk type '${productName}' is not configured.`
+            );
+        }
+
+        return milkType.milkTypeId;
     }
 }
 

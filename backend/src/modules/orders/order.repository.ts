@@ -344,7 +344,7 @@ class OrderRepository {
                 data.quantity,
                 data.deliveryDate,
                 data.deliveryTimePreference,
-                ONE_TIME_ORDER_STATUS.PENDING,
+                ONE_TIME_ORDER_STATUS.SCHEDULED,
             ]
         );
 

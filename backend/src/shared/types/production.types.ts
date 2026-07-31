@@ -12,6 +12,7 @@ export interface Production {
     recordedBy: number;
     facilityId: number;
     facilityName?: string;
+    milkTypeId: number;
     // Joined fields
     animalTagId?: string;
     animalName?: string;
@@ -29,6 +30,7 @@ export interface CreateProductionRequest {
     qualityStatus: string;
     recordedBy: number;
     facilityId: number;
+    milkTypeId: number;
 }
 
 export interface UpdateProductionRequest {
@@ -81,5 +83,6 @@ export interface MilkInventory {
     availableQuantity: number;
     storageCapacity: number;
     responsibleEmployee: number;
+    milkTypeId: number;
     lastUpdatedDate: string;
 }

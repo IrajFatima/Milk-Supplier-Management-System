@@ -143,6 +143,7 @@ CREATE TABLE milk_production (
     snf_percentage NUMERIC(4, 2) CHECK (snf_percentage >= 0 AND snf_percentage <= 100),
     milk_temperature NUMERIC(5, 2),
     quality_status TEXT,
+    milk_type_id BIGINT REFERENCES milk_types(milk_type_id),
     recorded_by BIGINT REFERENCES employees(employee_id) ON DELETE RESTRICT
 );
 
@@ -154,7 +155,8 @@ CREATE TABLE milk_inventory (
     storage_capacity NUMERIC(10, 2),
     quality_status TEXT,
     last_updated_date TIMESTAMPTZ DEFAULT NOW(),
-    responsible_employee BIGINT REFERENCES employees(employee_id) ON DELETE SET NULL
+    responsible_employee BIGINT REFERENCES employees(employee_id) ON DELETE SET NULL,
+    milk_type_id BIGINT REFERENCES milk_types(milk_type_id)
 );
 
 CREATE TABLE bmc_temperature_logs (
@@ -229,7 +231,8 @@ CREATE TABLE deliveries (
     delivered_quantity NUMERIC(10, 2) CHECK (delivered_quantity >= 0),
     delivery_status TEXT,
     payment_collected NUMERIC(10, 2) DEFAULT 0.00 CHECK (payment_collected >= 0),
-    delivery_remarks TEXT
+    delivery_remarks TEXT,
+    created_date TIMESTAMPTZ NOT NULL DEFAULT NOW();
 );
 
 CREATE TABLE bills (
@@ -458,7 +461,6 @@ CREATE INDEX idx_animal_weight_history_animal_id ON animal_weight_history(animal
 CREATE INDEX idx_milk_production_animal_id ON milk_production(animal_id);
 CREATE INDEX idx_milk_production_recorded_by ON milk_production(recorded_by);
 CREATE INDEX idx_milk_inventory_facility_id ON milk_inventory(facility_id);
-CREATE INDEX idx_milk_inventory_production_id ON milk_inventory(production_id);
 CREATE INDEX idx_bmc_temperature_logs_facility ON bmc_temperature_logs(storage_facility_id);
 
 -- Pricing & Contracts

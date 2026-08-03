@@ -1,4 +1,4 @@
-import type { AnimalStatus } from "../../../constants/animalStatus";
+import type { AnimalStatus } from "../../../constants/animal";
 
 interface AnimalStatusBadgeProps {
   status: AnimalStatus;

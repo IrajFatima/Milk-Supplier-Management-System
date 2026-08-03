@@ -1,7 +1,7 @@
-import type { AnimalStatus } from "../constants/animalStatus.js";
-import type { AnimalSpecies } from "../constants/animalSpecies.js";
-import type { AnimalGender } from "../constants/animalGender.js";
-import type { AcquisitionSource } from "../constants/acquisitionSource.js";
+import type { AnimalStatus } from "../constants/animal.js";
+import type { AnimalSpecies } from "../constants/animal.js";
+import type { AnimalGender } from "../constants/animal.js";
+import type { AcquisitionSource } from "../constants/animal.js";
 
 export interface Animal {
   animalId: number;
@@ -51,12 +51,12 @@ export interface DeactivateAnimalRequest {
 }
 
 export interface ReactivateAnimalRequest {
-    operationalStatus: AnimalStatus;
-    shedId: number;
+  operationalStatus: AnimalStatus;
+  shedId: number;
 }
 
 export interface ChangeAnimalStatusRequest {
-    operationalStatus: AnimalStatus;
+  operationalStatus: AnimalStatus;
 }
 
 export interface AnimalFilters {
@@ -91,20 +91,20 @@ export interface PaginatedAnimals {
   totalPages: number;
 }
 export interface Shed {
-    shedId: number;
-    shedName: string;
-    shedType: string | null;
-    locationArea: string | null;
-    capacity: number;
-    currentOccupancy: number;
-    availableCapacity: number;
-    status: string;
-    remarks: string | null;
+  shedId: number;
+  shedName: string;
+  shedType: string | null;
+  locationArea: string | null;
+  capacity: number;
+  currentOccupancy: number;
+  availableCapacity: number;
+  status: string;
+  remarks: string | null;
 }
 
 export interface ParentAnimal {
-    animalId: number;
-    tagId: string;
-    name: string | null;
-    gender: string;
+  animalId: number;
+  tagId: string;
+  name: string | null;
+  gender: string;
 }

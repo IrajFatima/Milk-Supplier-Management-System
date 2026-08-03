@@ -1,5 +1,4 @@
 import { AppError } from "../../shared/errors/AppError.js";
-import { ROLES, type Role } from "../../shared/constants/roles.js";
 import { systemConfigurationRepository } from "./systemConfiguration.repository.js";
 import { encrypt, decrypt } from "../../shared/utils/encryption.js";
 import type {

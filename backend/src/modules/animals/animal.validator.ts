@@ -1,8 +1,8 @@
 import { body, param, query } from "express-validator";
-import { ACQUISITION_SOURCE_OPTIONS } from "../../shared/constants/acquisitionSource.js";
-import { ANIMAL_GENDER_OPTIONS } from "../../shared/constants/animalGender.js";
-import { ANIMAL_SPECIES_OPTIONS } from "../../shared/constants/animalSpecies.js";
-import { ANIMAL_STATUS_OPTIONS } from "../../shared/constants/animalStatus.js";
+import { ACQUISITION_SOURCE_OPTIONS } from "../../shared/constants/animal.js";
+import { ANIMAL_GENDER_OPTIONS } from "../../shared/constants/animal.js";
+import { ANIMAL_SPECIES_OPTIONS } from "../../shared/constants/animal.js";
+import { ANIMAL_STATUS_OPTIONS } from "../../shared/constants/animal.js";
 
 export const createAnimalValidator = [
     body("tagId")

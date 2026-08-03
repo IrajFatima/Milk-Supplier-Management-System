@@ -8,7 +8,7 @@ import {
     AnimalFilters,
 } from "../../shared/types/animal.types.js";
 import type { ParentAnimal } from "../../shared/types/animal.types.js";
-import { AnimalStatus } from "../../shared/constants/animalStatus.js";
+import { AnimalStatus } from "../../shared/constants/animal.js";
 
 export class AnimalRepository {
 

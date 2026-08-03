@@ -13,8 +13,8 @@ import {
     ReactivateAnimalRequest,
     ChangeAnimalStatusRequest
 } from "../../shared/types/animal.types.js";
-import { ANIMAL_BREEDS } from "../../shared/constants/animalBreed.js";
-import { ANIMAL_STATUS } from "../../shared/constants/animalStatus.js";
+import { ANIMAL_BREEDS } from "../../shared/constants/animal.js";
+import { ANIMAL_STATUS } from "../../shared/constants/animal.js";
 
 export class AnimalService {
     async create(payload: CreateAnimalRequest): Promise<Animal> {

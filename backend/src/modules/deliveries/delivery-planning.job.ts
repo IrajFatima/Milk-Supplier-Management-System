@@ -2,7 +2,6 @@
 
 import cron, { ScheduledTask } from "node-cron";
 
-import { orderRepository } from "../orders/order.repository.js";
 import { deliveryService } from "./delivery.service.js";
 import { deliveryRepository } from "./delivery.repository.js";
 

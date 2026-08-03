@@ -1,7 +1,7 @@
-import type { AnimalStatus } from "../constants/animalStatus";
-import type { AnimalSpecies } from "../constants/animalSpecies";
-import type { AnimalGender } from "../constants/animalGender";
-import type { AcquisitionSource } from "../constants/acquisitionSource";
+import type { AnimalStatus } from "../constants/animal";
+import type { AnimalSpecies } from "../constants/animal";
+import type { AnimalGender } from "../constants/animal";
+import type { AcquisitionSource } from "../constants/animal";
 
 export interface Animal {
     animalId: number;

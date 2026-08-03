@@ -18,15 +18,12 @@ frontend/
 │ │ └── TextField.tsx
 │ │
 │ ├── constants/ # App-wide constants
-│ │ ├── acquisitionSource.ts
-│ │ ├── animalBreed.ts
-│ │ ├── animalGender.ts
-│ │ ├── animalSpecies.ts
-│ │ ├── animalStatus.ts
+│ │ ├── animal.ts
 │ │ ├── customer.ts
 │ │ ├── delivery.ts
 │ │ ├── navigation.ts
 │ │ ├── order.ts
+│ │ ├── user.ts
 │ │ └── roles.ts
 │ │
 │ ├── context/ # React Context providers
@@ -129,6 +126,35 @@ frontend/
 │ │ │ ├── ProductionEditPage.tsx
 │ │ │ └── ProductionListPage.tsx
 │ │ │
+│ │ ├── users/
+│ │ │ ├── components/
+│ │ │ │ ├── UserDetails.tsx
+│ │ │ │ ├── UserFilters.tsx
+│ │ │ │ ├── UserForm.tsx
+│ │ │ │ ├── UserSearchBar.tsx
+│ │ │ │ ├── UserStatusBadge.tsx
+│ │ │ │ ├── UserTable.tsx
+│ │ │ │ ├── DeactivateUserModal.tsx
+│ │ │ │ └── ReactivateUserModal.tsx
+│ │ │ │
+│ │ │ └── pages/
+│ │ │ ├── UserDetailsPage.tsx
+│ │ │ ├── UserListPage.tsx
+│ │ │ ├── CreateUserPage.tsx
+│ │ │ └── EditUserPage.tsx
+│ │ │
+│ │ ├── systemConfigurations/
+│ │ │ ├── components/
+│ │ │ │ ├── SystemConfigurationDetails.tsx
+│ │ │ │ ├── SystemConfigurationForm.tsx
+│ │ │ │ ├── SystemConfigurationSearchBar.tsx
+│ │ │ │ └── SystemConfigurationTable.tsx
+│ │ │ │
+│ │ │ └── pages/
+│ │ │ ├── SystemConfigurationDetailsPage.tsx
+│ │ │ ├── SystemConfigurationListPage.tsx
+│ │ │ └── EditSystemConfigurationPage.tsx
+│ │ │
 │ │ └── temperatureLogs/
 │ │ ├── components/
 │ │ │ ├── TemperatureLogDetailCard.tsx
@@ -166,7 +192,9 @@ frontend/
 │ │ ├── customer.service.ts
 │ │ ├── delivery.service.ts
 │ │ ├── order.service.ts
+│ │ ├── systemConfiguration.service.ts
 │ │ ├── production.service.ts
+│ │ ├── user.service.ts
 │ │ └── temperatureLog.service.ts
 │ │
 │ ├── types/ # TypeScript type definitions
@@ -175,6 +203,7 @@ frontend/
 │ │ ├── auth.types.ts
 │ │ ├── customer.types.ts
 │ │ ├── delivery.types.ts
+│ │ ├── systemConfiguration.types.ts
 │ │ ├── order.types.ts
 │ │ ├── production.types.ts
 │ │ ├── temperature.types.ts

@@ -9,9 +9,9 @@ import type { CreateAnimalRequest } from "../../shared/types/animal.types.js";
 import type { UpdateAnimalRequest } from "../../shared/types/animal.types.js";
 import type { RelocateAnimalRequest } from "../../shared/types/animal.types.js";
 import type { DeactivateAnimalRequest } from "../../shared/types/animal.types.js";
-import type { AnimalSpecies } from "../../shared/constants/animalSpecies.js";
-import type { AnimalGender } from "../../shared/constants/animalGender.js";
-import type { AnimalStatus } from "../../shared/constants/animalStatus.js";
+import type { AnimalSpecies } from "../../shared/constants/animal.js";
+import type { AnimalGender } from "../../shared/constants/animal.js";
+import type { AnimalStatus } from "../../shared/constants/animal.js";
 import type { ReactivateAnimalRequest } from "../../shared/types/animal.types.js";
 
 class AnimalController {

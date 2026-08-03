@@ -4,7 +4,7 @@ import Table from "../../../components/Table";
 import type { TableColumn } from "../../../components/Table";
 import type { AnimalListItem } from "../../../types/animal.types";
 import AnimalStatusBadge from "./AnimalStatusBadge";
-import { ANIMAL_STATUS } from "../../../constants/animalStatus";
+import { ANIMAL_STATUS } from "../../../constants/animal";
 
 interface AnimalTableProps {
     animals: AnimalListItem[];

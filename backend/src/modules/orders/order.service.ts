@@ -2,7 +2,6 @@
 import { AppError } from "../../shared/errors/AppError.js";
 import { orderRepository } from "./order.repository.js";
 import { deliveryService } from "../deliveries/delivery.service.js";
-import { PoolClient } from "pg";
 import {
     CreateSubscriptionRequest,
     CreateOneTimeOrderRequest,

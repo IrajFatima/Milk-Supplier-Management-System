@@ -13,7 +13,7 @@ import Spinner from "../../../components/Spinner";
 import { animalService } from "../../../services/animal.service";
 
 import { useAuth } from "../../../hooks/useAuth";
-import { ANIMAL_STATUS } from "../../../constants/animalStatus";
+import { ANIMAL_STATUS } from "../../../constants/animal";
 import { ROLES } from "../../../constants/roles";
 
 import type { Animal } from "../../../types/animal.types";

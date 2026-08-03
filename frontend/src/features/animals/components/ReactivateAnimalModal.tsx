@@ -9,7 +9,7 @@ import { animalService } from "../../../services/animal.service";
 
 import type { ShedDropdown } from "../../../types/animal.types";
 
-import { ANIMAL_STATUS, type AnimalStatus } from "../../../constants/animalStatus";
+import { ANIMAL_STATUS, type AnimalStatus } from "../../../constants/animal";
 
 interface ReactivateAnimalModalProps {
     isOpen: boolean;

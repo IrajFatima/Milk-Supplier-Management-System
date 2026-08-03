@@ -7,7 +7,7 @@ import Dropdown from "../../../components/Dropdown";
 
 import { animalService } from "../../../services/animal.service";
 
-import { ANIMAL_STATUS, type AnimalStatus } from "../../../constants/animalStatus";
+import { ANIMAL_STATUS, type AnimalStatus } from "../../../constants/animal";
 
 interface ChangeAnimalStatusModalProps {
     isOpen: boolean;

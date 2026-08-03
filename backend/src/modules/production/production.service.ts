@@ -12,7 +12,7 @@ import {
     StorageFacility,
     MilkInventory
 } from "../../shared/types/production.types.js";
-import { ANIMAL_SPECIES } from "../../shared/constants/animalSpecies.js";
+import { ANIMAL_SPECIES } from "../../shared/constants/animal.js";
 import { animalRepository } from "../animals/animal.repository.js";
 
 

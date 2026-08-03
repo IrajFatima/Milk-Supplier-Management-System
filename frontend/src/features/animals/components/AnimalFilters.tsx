@@ -3,15 +3,11 @@ import Dropdown from "../../../components/Dropdown";
 import {
     ANIMAL_SPECIES,
     type AnimalSpecies,
-} from "../../../constants/animalSpecies";
-import {
     ANIMAL_GENDER,
     type AnimalGender,
-} from "../../../constants/animalGender";
-import {
     ANIMAL_STATUS,
     type AnimalStatus,
-} from "../../../constants/animalStatus";
+} from "../../../constants/animal";
 
 import type {
     AnimalFilters as AnimalFiltersType,

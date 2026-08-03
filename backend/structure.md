@@ -61,6 +61,13 @@ backend/
 │ │ ├── delivery.repository.ts
 │ │ ├── delivery.routes.ts
 │ │ └── delivery.validator.ts
+│ ├── system-configurations/
+│ │ ├── index.ts
+│ │ ├── systemConfiguration.controller.ts
+│ │ ├── systemConfiguration.service.ts
+│ │ ├── systemConfiguration.repository.ts
+│ │ ├── systemConfiguration.routes.ts
+│ │ └── systemConfiguration.validator.ts
 │ ├── orders/
 │ │ ├── index.ts
 │ │ ├── order.controller.ts
@@ -73,21 +80,19 @@ backend/
 │ └── users/
 └── shared/
 ├── constants/
-│ ├── acquisitionSource.ts
-│ ├── animalBreed.ts
-│ ├── animalGender.ts
-│ ├── animalSpecies.ts
-│ ├── animalStatus.ts
+│ ├── animal.ts
 │ ├── config.ts
 │ ├── delivery.ts
 │ ├── order.ts
 │ ├── customer.ts
+│ ├── user.ts
 │ └── roles.ts
 ├── errors/
 │ └── AppError.ts
 ├── types/
 │ ├── animal.types.ts
 │ ├── auth.types.ts
+│ ├── systemConfigurations.types.ts
 │ ├── customer.types.ts
 │ ├── production.types.ts
 │ ├── delivery.types.ts
@@ -96,6 +101,7 @@ backend/
 │ └── user.types.ts
 ├── utils/
 │ ├── databaseHealth.ts
+│ ├── encryption.ts
 │ ├── jwt.ts
 │ └── password.ts
 └── validators/ (empty directory)

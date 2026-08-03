@@ -46,6 +46,9 @@ import UserListPage from "../features/users/pages/UserListPage";
 import CreateUserPage from "../features/users/pages/CreateUserPage";
 import EditUserPage from "../features/users/pages/EditUserPage";
 import UserDetailsPage from "../features/users/pages/UserDetailsPage";
+import SystemConfigurationListPage from "../features/system-configurations/pages/SystemConfigurationListPage";
+import SystemConfigurationDetailsPage from "../features/system-configurations/pages/SystemConfigurationDetailsPage";
+import SystemConfigurationFormPage from "../features/system-configurations/pages/EditSystemConfigurationPage";
 
 
 export default function AppRoutes() {
@@ -153,6 +156,20 @@ export default function AppRoutes() {
                         <Route path="/users/:id" element={<UserDetailsPage />} />
                         <Route path="/users/create" element={<CreateUserPage />} />
                         <Route path="/users/:id/edit" element={<EditUserPage />} />
+
+                        <Route path="/system-configurations" element={<SystemConfigurationListPage />} />
+                        <Route
+                            path="/system-configurations/:configKey"
+                            element={<SystemConfigurationDetailsPage />}
+                        />
+                        <Route
+                            path="/system-configurations/create"
+                            element={<SystemConfigurationFormPage />}
+                        />
+                        <Route
+                            path="/system-configurations/:configKey/edit"
+                            element={<SystemConfigurationFormPage />}
+                        />
                     </Route>
 
                 </Route>

@@ -61,6 +61,12 @@ backend/
 │ │ ├── delivery.repository.ts
 │ │ ├── delivery.routes.ts
 │ │ └── delivery.validator.ts
+│ ├── dashboard/
+│ │ ├── index.ts
+│ │ ├── dashboard.controller.ts
+│ │ ├── dashboard.service.ts
+│ │ ├── dashboard.repository.ts
+│ │ └── dashboard.routes.ts
 │ ├── system-configurations/
 │ │ ├── index.ts
 │ │ ├── systemConfiguration.controller.ts
@@ -83,6 +89,7 @@ backend/
 │ ├── animal.ts
 │ ├── config.ts
 │ ├── delivery.ts
+│ ├── dashboard.ts
 │ ├── order.ts
 │ ├── customer.ts
 │ ├── user.ts
@@ -96,6 +103,7 @@ backend/
 │ ├── customer.types.ts
 │ ├── production.types.ts
 │ ├── delivery.types.ts
+│ ├── dashboard.types.ts
 │ ├── order.types.ts
 │ ├── temperature.types.ts
 │ └── user.types.ts

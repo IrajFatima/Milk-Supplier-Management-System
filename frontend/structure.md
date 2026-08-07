@@ -90,6 +90,20 @@ frontend/
 │ │ │ ├── DeliveryDetailsPage.tsx
 │ │ │ └── DeliveryListPage.tsx
 │ │ │
+│ │ ├── dashboard/  
+│ │ │ ├── components
+│ │ │ │ ├── DashboardSection.tsx
+│ │ │ │ ├── DashboardSummaryCard.tsx
+│ │ │ │ ├── RecentEntityTable.tsx
+│ │ │ │ └── TemperatureCard.tsx
+│ │ │ │
+│ │ │ └── pages/
+│ │ │ ├── AccountantDashboardPage.tsx
+│ │ │ ├── DeliveryDashboardPage.tsx
+│ │ │ ├── FarmWorkerDashboardPage.tsx
+│ │ │ ├── OwnerDashboardPage.tsx
+│ │ │ └── SystemAdministratorDashboardPage.tsx
+│ │ │
 │ │ ├── orders/
 │ │ │ ├── components/
 │ │ │ │ ├── CancelOrderModal.tsx
@@ -191,6 +205,7 @@ frontend/
 │ │ ├── auth.service.ts
 │ │ ├── customer.service.ts
 │ │ ├── delivery.service.ts
+│ │ ├── dashboard.service.ts
 │ │ ├── order.service.ts
 │ │ ├── systemConfiguration.service.ts
 │ │ ├── production.service.ts
@@ -203,6 +218,7 @@ frontend/
 │ │ ├── auth.types.ts
 │ │ ├── customer.types.ts
 │ │ ├── delivery.types.ts
+│ │ ├── dashboard.types.ts
 │ │ ├── systemConfiguration.types.ts
 │ │ ├── order.types.ts
 │ │ ├── production.types.ts

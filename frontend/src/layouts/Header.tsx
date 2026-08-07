@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
-import { FiBell } from "react-icons/fi";
+// import { FiBell } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
@@ -29,14 +29,14 @@ const Header = ({ title = "Dashboard", breadcrumb, onMenuClick }: HeaderProps) =
             </div>
 
             <div className="flex items-center gap-5">
-                <button
+                {/* <button
                     className="relative rounded-md p-2 text-[var(--color-text-secondary)] hover:bg-slate-100 transition"
                     aria-label="Notifications"
                 >
                     <FiBell size={20} />
 
                     <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-                </button>
+                </button> */}
 
                 <div className="relative">
                     <button onClick={() => setOpenProfile((prev) => !prev)} className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-slate-100 transition">

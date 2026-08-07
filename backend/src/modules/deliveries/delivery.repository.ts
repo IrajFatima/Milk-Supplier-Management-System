@@ -638,6 +638,19 @@ export class DeliveryRepository {
             totalPages: Math.ceil(total / limit),
         };
     }
+    async markExpiredDeliveriesAsFailed(): Promise<number> {
+        const query = `
+        UPDATE deliveries
+        SET delivery_status = 'Failed'
+        WHERE
+            delivery_date < CURRENT_DATE
+            AND delivery_status IN ('Scheduled', 'Assigned');
+    `;
+
+        const result = await pool.query(query);
+
+        return result.rowCount ?? 0;
+    }
 }
 
 export const deliveryRepository = new DeliveryRepository();

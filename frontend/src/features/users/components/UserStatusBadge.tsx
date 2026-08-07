@@ -34,7 +34,6 @@ export default function UserStatusBadge({
     status,
 }: UserStatusBadgeProps) {
     const style = statusStyles[status];
-    console.log("status: ", status);
 
     return (
         <span

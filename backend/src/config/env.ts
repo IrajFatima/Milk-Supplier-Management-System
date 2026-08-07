@@ -10,6 +10,7 @@ export const env = {
 
   jwtSecret: process.env.JWT_SECRET as string,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
+  configEncryptionKey: process.env.CONFIG_ENCRYPTION_KEY as string
 };
 
 if (!env.databaseUrl) {

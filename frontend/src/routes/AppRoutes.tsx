@@ -6,7 +6,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import AuthLayout from "../layouts/AuthLayout";
 import { ROLES } from "../constants/roles";
-import type { Role } from "../constants/roles"; // adjust path if needed
 import UserProfile from "../features/auth/pages/UserProfile";
 import NotFoundPage from "../features/auth/pages/NotFoundPage";
 import AnimalListPage from "../features/animals/pages/AnimalListPage";
@@ -46,20 +45,20 @@ import UserListPage from "../features/users/pages/UserListPage";
 import CreateUserPage from "../features/users/pages/CreateUserPage";
 import EditUserPage from "../features/users/pages/EditUserPage";
 import UserDetailsPage from "../features/users/pages/UserDetailsPage";
-import SystemConfigurationListPage from "../features/system-configurations/pages/SystemConfigurationListPage";
-import SystemConfigurationDetailsPage from "../features/system-configurations/pages/SystemConfigurationDetailsPage";
-import SystemConfigurationFormPage from "../features/system-configurations/pages/EditSystemConfigurationPage";
 
+// system configurations page
+import SystemConfigurationListPage from "../features/systemConfigurations/pages/SystemConfigurationListPage";
+import SystemConfigurationDetailsPage from "../features/systemConfigurations/pages/SystemConfigurationDetailsPage";
+import SystemConfigurationFormPage from "../features/systemConfigurations/pages/EditSystemConfigurationPage";
+
+// Dashboard pages
+import OwnerDashboardPage from "../features/dashboard/pages/OwnerDashboardPage";
+import FarmWorkerDashboardPage from "../features/dashboard/pages/FarmWorkerDashboardPage";
+import DeliveryDashboardPage from "../features/dashboard/pages/DeliveryDashboardPage";
+import AccountantDashboardPage from "../features/dashboard/pages/AccountantDashboardPage";
+import SystemAdministratorDashboardPage from "../features/dashboard/pages/SystemAdministratorDashboardPage";
 
 export default function AppRoutes() {
-    const roles: [Role, string, string][] = [
-        [ROLES.OWNER, "/owner/dashboard", "Owner"],
-        [ROLES.FARM_WORKER, "/farm/dashboard", "Farm"],
-        [ROLES.DELIVERY_STAFF, "/delivery/dashboard", "Delivery"],
-        [ROLES.ACCOUNTANT, "/accountant/dashboard", "Accountant"],
-        [ROLES.SYSTEM_ADMINISTRATOR, "/administrator/dashboard", "Administrator"],
-        [ROLES.CUSTOMER, "/customer/dashboard", "Customer"],
-    ];
 
     return (
         <Routes>
@@ -69,11 +68,21 @@ export default function AppRoutes() {
 
             <Route element={<ProtectedRoute />}>
                 <Route element={<AuthLayout />}>
-                    {roles.map(([role, path, name]) => (
-                        <Route key={path} element={<RoleProtectedRoute allowedRoles={[role]} />}>
-                            <Route path={path} element={<div>{name} Dashboard</div>} />
-                        </Route>
-                    ))}
+                    <Route element={<RoleProtectedRoute allowedRoles={[ROLES.OWNER]} />}>
+                        <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+                    </Route>
+                    <Route element={<RoleProtectedRoute allowedRoles={[ROLES.FARM_WORKER]} />}>
+                        <Route path="/farm/dashboard" element={<FarmWorkerDashboardPage />} />
+                    </Route>
+                    <Route element={<RoleProtectedRoute allowedRoles={[ROLES.DELIVERY_STAFF]} />}>
+                        <Route path="/delivery/dashboard" element={<DeliveryDashboardPage />} />
+                    </Route>
+                    <Route element={<RoleProtectedRoute allowedRoles={[ROLES.ACCOUNTANT]} />}>
+                        <Route path="/accountant/dashboard" element={<AccountantDashboardPage />} />
+                    </Route>
+                    <Route element={<RoleProtectedRoute allowedRoles={[ROLES.SYSTEM_ADMINISTRATOR]} />}>
+                        <Route path="/administrator/dashboard" element={<SystemAdministratorDashboardPage />} />
+                    </Route>
                     <Route path="/profile" element={<UserProfile />} />
 
                     {/* Routes accessible to Owner and Farm Worker */}

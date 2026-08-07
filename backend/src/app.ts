@@ -10,6 +10,7 @@ import { orderRoutes } from "./modules/orders/index.js";
 import { deliveryRoutes } from "./modules/deliveries/index.js";
 import { userRoutes } from "./modules/users/index.js";
 import { systemConfigurationRoutes } from "./modules/system-configurations/index.js";
+import { dashboardRoutes } from "./modules/dashboard/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -39,6 +40,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/deliveries", deliveryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/system-configurations", systemConfigurationRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

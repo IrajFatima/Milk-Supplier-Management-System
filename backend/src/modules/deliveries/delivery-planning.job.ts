@@ -13,9 +13,20 @@ export class DeliveryPlanningJob {
         this.task = cron.schedule("*/5 * * * *", async () => {
             try {
                 console.log(
-                    "[Delivery Planning] Checking whether deliveries should be generated..."
+                    "[Delivery Planning] Running scheduled delivery tasks..."
                 );
 
+                // Mark overdue deliveries as failed
+                const failed =
+                    await deliveryService.markExpiredDeliveriesAsFailed();
+
+                if (failed > 0) {
+                    console.log(
+                        `[Delivery Planning] ${failed} overdue deliveries marked as Failed.`
+                    );
+                }
+
+                // Get configured delivery planning cutoff time
                 const cutoff =
                     await deliveryRepository.getDeliveryPlanningCutoffTime();
 
@@ -33,22 +44,22 @@ export class DeliveryPlanningJob {
                     .map(Number);
 
                 const cutoffTime = new Date(now);
-
                 cutoffTime.setHours(hours, minutes, 0, 0);
 
-                // Wait until cutoff time
+                // Only generate tomorrow's deliveries after the cutoff time
                 if (now < cutoffTime) {
                     return;
                 }
 
-                // Tomorrow
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
 
                 const deliveryDate =
-                    `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, "0")
-                    }-${String(tomorrow.getDate()).padStart(2, "0")
-                    }`;
+                    `${tomorrow.getFullYear()}-${String(
+                        tomorrow.getMonth() + 1
+                    ).padStart(2, "0")}-${String(
+                        tomorrow.getDate()
+                    ).padStart(2, "0")}`;
 
                 const created =
                     await deliveryService.generateDeliveriesForDate(
@@ -81,5 +92,4 @@ export class DeliveryPlanningJob {
     }
 }
 
-export const deliveryPlanningJob =
-    new DeliveryPlanningJob();
+export const deliveryPlanningJob = new DeliveryPlanningJob();

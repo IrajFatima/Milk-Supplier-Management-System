@@ -1,9 +1,9 @@
 import crypto from "crypto";
-
+import {env} from "../../config/env.js";
 const ALGORITHM = "aes-256-gcm";
 
 const ENCRYPTION_KEY = Buffer.from(
-    process.env.CONFIG_ENCRYPTION_KEY!,
+    env.configEncryptionKey,
     "hex"
 );
 

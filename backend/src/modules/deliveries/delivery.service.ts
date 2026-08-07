@@ -243,6 +243,10 @@ export class DeliveryService {
         }
         return updatedDelivery;
     }
+
+    async markExpiredDeliveriesAsFailed(): Promise<number> {
+        return await deliveryRepository.markExpiredDeliveriesAsFailed();
+    }
 }
 
 export const deliveryService = new DeliveryService();

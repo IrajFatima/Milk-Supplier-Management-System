@@ -58,18 +58,13 @@ export default function EditSystemConfigurationPage() {
             );
 
             toast.success("System configuration updated successfully.");
-            navigate(`/system-configurations/${configKey}`);
+            navigate(`/systemConfigurations/${configKey}`);
         } catch (error: unknown) {
             toast.error(
                 getApiErrorMessage(
                     error,
                     "Failed to update system configuration."
                 )
-            );
-
-            throw new Error(
-                "System configuration update failed.",
-                { cause: error }
             );
         }
     }

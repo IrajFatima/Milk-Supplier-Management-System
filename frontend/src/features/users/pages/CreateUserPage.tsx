@@ -31,9 +31,6 @@ export default function CreateUserPage() {
                 )
             );
 
-            throw new Error("User creation failed.", {
-                cause: error,
-            });
         }
     }
 

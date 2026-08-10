@@ -72,9 +72,6 @@ export default function EditUserPage() {
                 )
             );
 
-            throw new Error("User update failed.", {
-                cause: error,
-            });
         }
     }
 

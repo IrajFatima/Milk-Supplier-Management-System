@@ -30,10 +30,6 @@ export default function CreateCustomerPage() {
                     "Failed to create customer."
                 )
             );
-
-            throw new Error(
-                "Customer creation failed.", { cause: error }
-            );
         }
     }
 

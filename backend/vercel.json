@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/src/app.ts"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/deliveries",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/temperature-logs",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

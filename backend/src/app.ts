@@ -11,14 +11,21 @@ import { deliveryRoutes } from "./modules/deliveries/index.js";
 import { userRoutes } from "./modules/users/index.js";
 import { systemConfigurationRoutes } from "./modules/system-configurations/index.js";
 import { dashboardRoutes } from "./modules/dashboard/index.js";
+import {cronRoutes} from "./modules/cron/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import {env} from "./config/env.js";
 
 const app = express();
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(
+    cors({
+        origin: env.frontendUrl,
+        credentials: true,
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,7 +40,7 @@ app.get("/", (_req, res) => {
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/animals", animalRoutes);
-app.use("/api/production",productionRoutes);
+app.use("/api/production", productionRoutes);
 app.use("/api/temperature-logs", temperatureLogsRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/orders", orderRoutes);
@@ -41,6 +48,7 @@ app.use("/api/deliveries", deliveryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/system-configurations", systemConfigurationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/cron", cronRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

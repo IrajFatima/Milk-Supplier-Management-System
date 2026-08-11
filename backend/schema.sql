@@ -508,21 +508,393 @@ CREATE INDEX idx_audit_logs_user ON audit_logs(user_id);
 CREATE INDEX idx_audit_logs_timestamp ON audit_logs(timestamp);
 
 -- ==========================================
--- 5. SEED DATA FOR LOOKUP TABLES
+-- 5. SEED DATA
 -- ==========================================
 
-INSERT INTO roles (role_name, role_description, role_status) VALUES
-('Owner', 'Primary business owner with complete operational and financial control', 'Active'),
-('System Administrator', 'Complete system-wide administrative privileges', 'Active'),
-('Accountant', 'Manages financial records, invoices, expenses, and payments', 'Active'),
-('Farm Worker', 'Manages animals, production shifts, health tracking, and inventory', 'Active'),
-('Delivery Staff', 'Responsible for product delivery execution, routing, and loading sheets', 'Active'),
-('Customer', 'Access to self-service portal (subscriptions, holds, payments)', 'Active');
+-- ------------------------------------------
+-- 5.1 Roles
+-- ------------------------------------------
 
--- default password for testing users: user123
--- ==========================================
--- 6. FINAL VERIFICATION COMMENTS
--- ==========================================
--- Database design for Milk Supplier Management System (MSMS) successfully created.
--- All tables are generated in sequential order prioritizing foreign key dependencies.
--- All primary, foreign, unique, default, check, and indexing rules are applied.
+INSERT INTO roles (role_id, role_name, role_description, role_status)
+VALUES
+    (1, 'System Administrator', 'Complete system-wide administrative privileges', 'Active'),
+    (2, 'Accountant', 'Manages financial records, invoices, expenses, and payments', 'Active'),
+    (3, 'Farm Worker', 'Manages animals, production shifts, health tracking, and inventory', 'Active'),
+    (4, 'Delivery Staff', 'Responsible for product delivery execution, routing, and loading sheets', 'Active'),
+    (5, 'Customer', 'Access to self-service portal (subscriptions, holds, payments)', 'Active'),
+    (6, 'Owner', 'Primary business owner with complete operational and financial control', 'Active');
+
+
+-- ------------------------------------------
+-- 5.2 Employees
+-- Must be inserted before users because
+-- users.employee_id references employees.employee_id
+-- ------------------------------------------
+
+INSERT INTO employees
+    (employee_id, full_name, contact_number, email_address, job_title, department, hire_date, employment_status)
+VALUES
+    (1, 'sam sysadm', '03000000001', 'admin@msms.com',
+     'System Administrator', 'Administration', '2026-07-22', 'Active'),
+
+    (2, 'Jack worker', '03000000002', 'farmworker@msms.com',
+     'Farm Worker', 'Farm Operations', '2026-07-22', 'Active'),
+
+    (3, 'harry accountant', '03000000012', 'accountant@msms.com',
+     'Accountant', 'Finance', '2026-07-22', 'Active'),
+
+    (4, 'shelly delivery', '03000000004', 'delivery@msms.com',
+     'Delivery Staff', 'Logistics', '2026-07-21', 'Active'),
+
+    (5, 'Ali Delivery', '03001234567', 'delivery.staff@msms.com',
+     'Delivery Staff', 'Logistics', '2026-07-30', 'Active');
+
+
+-- ------------------------------------------
+-- 5.3 Test Users
+--
+-- Passwords:
+-- owner      -> user12345
+-- sysadmin   -> user123
+-- accountant -> user123
+-- farmworker -> user123
+-- delivery   -> user123
+--
+-- owner has no employee record because the
+-- Owner account is the business owner.
+-- ------------------------------------------
+
+INSERT INTO users
+    (user_id, username, email, password_hash, account_status,
+     last_login, employee_id, customer_id, role_id,
+     failed_login_attempts, lockout_until, reset_token, reset_token_expires)
+VALUES
+    (
+        1,
+        'owner',
+        'owner@msms.com',
+        '$2b$12$YaEUt6UzQ5QPIvi2/qegt.ZAq1cRD/1iqMhDug81vC4Y8oK0p5vjC',
+        'Active',
+        NULL,
+        NULL,
+        NULL,
+        6,
+        0,
+        NULL,
+        NULL,
+        NULL
+    ),
+    (
+        2,
+        'sysadmin',
+        'admin@msms.com',
+        '$2a$12$8WUudRKUFFNN7ozSUYgLgOvVTMY4HWgP2QMzrwg6IaI1IxrCVoYpW',
+        'Active',
+        NULL,
+        1,
+        NULL,
+        1,
+        0,
+        NULL,
+        NULL,
+        NULL
+    ),
+    (
+        3,
+        'accountant',
+        'accountant@msms.com',
+        '$2b$12$EMgZMMMHTKUnnF5d4m61sOSo2nqXVaV1dJcwcDbOvNAAIN2ssyr6q',
+        'Active',
+        NULL,
+        3,
+        NULL,
+        2,
+        0,
+        NULL,
+        NULL,
+        NULL
+    ),
+    (
+        4,
+        'farmworker',
+        'farmworker@msms.com',
+        '$2a$12$8WUudRKUFFNN7ozSUYgLgOvVTMY4HWgP2QMzrwg6IaI1IxrCVoYpW',
+        'Active',
+        NULL,
+        2,
+        NULL,
+        3,
+        0,
+        NULL,
+        NULL,
+        NULL
+    ),
+    (
+        5,
+        'delivery',
+        'delivery@msms.com',
+        '$2a$12$8WUudRKUFFNN7ozSUYgLgOvVTMY4HWgP2QMzrwg6IaI1IxrCVoYpW',
+        'Active',
+        NULL,
+        4,
+        NULL,
+        4,
+        0,
+        NULL,
+        NULL,
+        NULL
+    );
+
+
+-- ------------------------------------------
+-- 5.4 Milk Types
+-- Must exist before milk_inventory and
+-- milk_production/order-related records.
+-- ------------------------------------------
+
+INSERT INTO milk_types
+    (milk_type_id, product_name, unit, default_unit_price, description, status, created_date)
+VALUES
+    (1, 'Cow Milk', 'Liter', 220.00,
+     'Fresh cow milk', 'Active', '2026-07-28 10:34:18.782173+00'),
+
+    (2, 'Buffalo Milk', 'Liter', 300.00,
+     'Fresh buffalo milk', 'Active', '2026-07-28 10:34:18.782173+00');
+
+
+-- ------------------------------------------
+-- 5.5 Sheds / Housing
+-- ------------------------------------------
+
+INSERT INTO sheds_housing
+    (shed_id, shed_name, shed_type, location_area, capacity,
+     current_occupancy, status, remarks)
+VALUES
+    (
+        1,
+        'North Paddock Shed A',
+        'Open Barn',
+        'North Paddock',
+        50,
+        0,
+        'Active',
+        'Primary dairy shed for high-yield cows. Recently renovated ventilation system.'
+    ),
+    (
+        2,
+        'South Valley Shed B',
+        'Enclosed Barn',
+        'South Valley',
+        40,
+        2,
+        'Active',
+        'Temperature-controlled facility for young stock and pregnant heifers.'
+    ),
+    (
+        3,
+        'East Pasture Shed C',
+        'Open Barn',
+        'East Pasture',
+        60,
+        2,
+        'Active',
+        'Largest capacity shed. Used for mid-lactation cows. Good grazing access.'
+    ),
+    (
+        4,
+        'West Hills Shed D',
+        'Enclosed Barn',
+        'West Hills',
+        35,
+        0,
+        'Active',
+        'Undergoing minor roof repairs. Currently housing low-yield cows.'
+    ),
+    (
+        5,
+        'Central Holding Shed E',
+        'Open Barn',
+        'Central Compound',
+        45,
+        1,
+        'Active',
+        'Currently empty, being used as storage during off-season.'
+    );
+
+
+-- ------------------------------------------
+-- 5.6 Storage Facilities
+-- Must exist before milk_inventory.
+-- ------------------------------------------
+
+INSERT INTO storage_facilities
+    (facility_id, facility_name, facility_type, location_area,
+     total_capacity, current_temperature_setting, operational_status,
+     installation_date, last_maintenance_date, remarks)
+VALUES
+    (
+        1,
+        'BMC Tank A',
+        'BMC',
+        'North Yard',
+        5000.00,
+        4.00,
+        'Active',
+        '2026-07-22',
+        '2026-07-22',
+        'Primary bulk milk cooler.'
+    ),
+    (
+        2,
+        'Storage Tank B',
+        'Storage Tank',
+        'Processing Unit',
+        3000.00,
+        4.00,
+        'Active',
+        '2026-07-22',
+        '2026-07-22',
+        'Secondary storage tank.'
+    ),
+    (
+        3,
+        'Cold Room C',
+        'Cold Room',
+        'Packaging Area',
+        1500.00,
+        4.00,
+        'Active',
+        '2026-07-22',
+        '2026-07-22',
+        'Finished product cold storage.'
+    );
+
+
+-- ------------------------------------------
+-- 5.7 Milk Inventory
+-- Depends on storage_facilities, milk_types
+-- and optionally employees.
+-- ------------------------------------------
+
+INSERT INTO milk_inventory
+    (inventory_id, facility_id, available_quantity, package_type,
+     storage_capacity, quality_status, last_updated_date,
+     responsible_employee, milk_type_id)
+VALUES
+    (
+        1,
+        1,
+        4.00,
+        'Bulk',
+        5000.00,
+        'Good',
+        '2026-08-11 07:13:53.187681+00',
+        NULL,
+        1
+    ),
+    (
+        2,
+        2,
+        6.00,
+        'Bulk',
+        3000.00,
+        'Good',
+        '2026-07-30 12:12:01.709141+00',
+        NULL,
+        1
+    ),
+    (
+        3,
+        3,
+        0.00,
+        'Bulk',
+        1500.00,
+        'Good',
+        '2026-07-22 11:35:45.874191+00',
+        NULL,
+        2
+    );
+
+
+-- ------------------------------------------
+-- 5.8 System Configurations
+-- Must be inserted after users because
+-- updated_by references users.user_id.
+-- ------------------------------------------
+
+INSERT INTO system_configurations
+    (config_key, config_value, description, data_type,
+     is_encrypted, updated_at, updated_by, created_at, category)
+VALUES
+    (
+        'delivery_cutoff_time',
+        '20:00',
+        'Daily delivery planning cut-off time. Must always be later than the order cut-off time.',
+        'TIME',
+        FALSE,
+        '2026-08-03 07:36:26.018359+00',
+        2,
+        '2026-07-29 08:08:40.285332+00',
+        'Order Management'
+    ),
+    (
+        'order_cutoff_time',
+        '15:00',
+        'Daily order cut-off time for creating or modifying customer orders and subscriptions.',
+        'TIME',
+        FALSE,
+        '2026-08-03 07:27:03.336793+00',
+        2,
+        '2026-07-29 08:08:40.285332+00',
+        'Order Management'
+    );
+
+
+-- ------------------------------------------
+-- 5.9 Synchronize BIGSERIAL sequences
+-- ------------------------------------------
+-- Required because explicit IDs were supplied
+-- above. This allows future INSERTs without
+-- duplicate primary-key errors.
+
+SELECT setval(
+    pg_get_serial_sequence('roles', 'role_id'),
+    COALESCE((SELECT MAX(role_id) FROM roles), 1),
+    true
+);
+
+SELECT setval(
+    pg_get_serial_sequence('employees', 'employee_id'),
+    COALESCE((SELECT MAX(employee_id) FROM employees), 1),
+    true
+);
+
+SELECT setval(
+    pg_get_serial_sequence('users', 'user_id'),
+    COALESCE((SELECT MAX(user_id) FROM users), 1),
+    true
+);
+
+SELECT setval(
+    pg_get_serial_sequence('milk_types', 'milk_type_id'),
+    COALESCE((SELECT MAX(milk_type_id) FROM milk_types), 1),
+    true
+);
+
+SELECT setval(
+    pg_get_serial_sequence('sheds_housing', 'shed_id'),
+    COALESCE((SELECT MAX(shed_id) FROM sheds_housing), 1),
+    true
+);
+
+SELECT setval(
+    pg_get_serial_sequence('storage_facilities', 'facility_id'),
+    COALESCE((SELECT MAX(facility_id) FROM storage_facilities), 1),
+    true
+);
+
+SELECT setval(
+    pg_get_serial_sequence('milk_inventory', 'inventory_id'),
+    COALESCE((SELECT MAX(inventory_id) FROM milk_inventory), 1),
+    true
+);

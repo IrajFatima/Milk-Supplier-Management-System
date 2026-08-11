@@ -4,6 +4,7 @@ backend/
 ├── package.json
 ├── package-lock.json
 ├── tsconfig.json
+├── vercel.json
 ├── schema.sql
 └── src/
 ├── app.ts
@@ -38,6 +39,10 @@ backend/
 │ │ ├── customer.repository.ts
 │ │ ├── customer.routes.ts
 │ │ └── customer.validator.ts
+│ ├── cron/
+│ │ ├── index.ts
+│ │ ├── cron.controller.ts
+│ │ └── cron.routes.ts
 │ ├── production/
 │ │ ├── index.ts
 │ │ ├── production.controller.ts

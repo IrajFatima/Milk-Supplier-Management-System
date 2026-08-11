@@ -239,6 +239,7 @@ frontend/
 ├── package.json
 ├── package-lock.json
 ├── tsconfig.json
+├── vercel.json
 ├── tsconfig.app.json
 ├── tsconfig.node.json
 ├── vite.config.ts
